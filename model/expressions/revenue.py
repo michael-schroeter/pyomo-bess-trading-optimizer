@@ -1,6 +1,5 @@
 import pyomo.environ as pyo
 from config import (
-    SPECIFIC_SRL_ENERGY_NEED_4H_CYCLE,
     MARKET_SWITCH,
     PRL_SWITCH, 
     SRL_SWITCH,

@@ -1,8 +1,6 @@
 import pyomo.environ as pyo
 from config import (
     SPECIFIC_AGING_COST,
-    SPECIFIC_PRL_ENERGY_NEED_4H_CYCLE,
-    SPECIFIC_SRL_ENERGY_NEED_4H_CYCLE,
 )
 
 
