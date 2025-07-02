@@ -1,40 +1,5 @@
-import pandas as pd
-from config import (
-    PATH_SRL_WORK_DATA,
-    SPECIFIC_AGING_COST,
-    PROFIT_FACTOR_SRL_POS,
-    PROFIT_FACTOR_SRL_NEG,
-)
-from config_column_names import (
-    ColumnNamesRaw as CR,
-    ColumnNamesClean as CC,
-)
-
-
-
-def load_srl_work_cbmp_data(path, specific_aging_cost, cr_srl_neg_work_cbmp, cr_srl_pos_work_cbmp, cc_srl_neg_work_cbmp, cc_srl_pos_work_cbmp):
-    df = pd.read_pickle(path)
-    df.fillna(0, inplace=True)
-    df[cc_srl_neg_work_cbmp] = 0.0
-    df[cc_srl_pos_work_cbmp] = 0.0
-
-
-    mask_pos = (df[cr_srl_pos_work_cbmp] > specific_aging_cost * PROFIT_FACTOR_SRL_POS) & (df[cr_srl_neg_work_cbmp] == 0)
-    df.loc[mask_pos, cc_srl_pos_work_cbmp] = df.loc[mask_pos, cr_srl_pos_work_cbmp] 
-
-    mask_neg = (-df[cr_srl_neg_work_cbmp] > specific_aging_cost * PROFIT_FACTOR_SRL_NEG) & (df[cr_srl_pos_work_cbmp] == 0)
-    df.loc[mask_neg, cc_srl_neg_work_cbmp] = df.loc[mask_neg, cr_srl_neg_work_cbmp]
-
-    df.drop(columns=[cr_srl_neg_work_cbmp, cr_srl_pos_work_cbmp], inplace=True)
-
-    return df
-    
-
-if __name__ == "__main__":
-    cr_p_neg = CR.SRL_NEG_WORK_CBMP
-    cr_p_pos = CR.SRL_POS_WORK_CBMP
-    cc_p_neg = CC.SRL_NEG_WORK_CBMP
-    cc_p_pos = CC.SRL_POS_WORK_CBMP
-    df = load_srl_work_cbmp_data(PATH_SRL_WORK_DATA, SPECIFIC_AGING_COST, cr_p_neg, cr_p_pos, cc_p_neg, cc_p_pos)
-    print(df)
-
+#Export Config
+RESULTS_DIR = Path("results")
+FILE_NAME = f"results_market-{MARKET_SWITCH}_prl-{PRL_SWITCH}_srl-{SRL_SWITCH}_{BAT_CAPACITY}-MWH_{SYSTEM_POWER}MW_{BAT_PRICE}€_LC-{LIFETIME_CYCLES}n_n-{EFFICIENCY}%_{START_DATE}to{END_DATE}"
+RESULTS_FILE_NAME_EXCEL =  f"{FILE_NAME}.xlsx"
+RESULTS_FILE_NAME_PICKLE = f"{FILE_NAME}.pkl"

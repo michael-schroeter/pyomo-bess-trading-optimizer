@@ -1,8 +1,6 @@
-from config import SYSTEM_POWER, BAT_CAPACITY
 import pyomo.environ as pyo
+from params import SYSTEM_POWER, BAT_CAPACITY
 
-import pyomo.environ as pyo
-from config import SYSTEM_POWER # Stelle sicher, dass SYSTEM_POWER importiert wird
 
 def add_srl_mode_constraints(model):
     """

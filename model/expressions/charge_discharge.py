@@ -1,10 +1,9 @@
 import pyomo.environ as pyo
-from config import (
+from params import (
     EFFICIENCY,
-    SPECIFIC_PRL_ENERGY_NEED_4H_CYCLE,	
-)
+)   
+from config import SPECIFIC_PRL_ENERGY_NEED_4H_CYCLE
 
-import pyomo.environ as pyo
 
 def define_charge_discharge_expr(model):
 

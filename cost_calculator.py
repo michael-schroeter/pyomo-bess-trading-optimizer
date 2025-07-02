@@ -14,7 +14,7 @@ from config_cost import (
 
 )
 
-from config import BAT_CAPACITY, SYSTEM_POWER
+from params import BAT_CAPACITY, SYSTEM_POWER
 
 
 def calculate_investment_costs():

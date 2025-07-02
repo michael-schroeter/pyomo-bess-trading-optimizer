@@ -1,8 +1,6 @@
 import pyomo.environ as pyo
-from config import (
+from params import (
     MARKET_SWITCH,
-    PRL_SWITCH, 
-    SRL_SWITCH,
 )
 
 

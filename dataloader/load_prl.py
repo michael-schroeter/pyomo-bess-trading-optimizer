@@ -1,18 +1,20 @@
 import os
 import pandas as pd
 from utils import get_pickle_path
+from config_column_names import ColumnNamesRaw as CR, ColumnNamesClean as CC
+from config import PATH_PRL_DATA
 
 
-def load_prl_data(path, cr_prl_price, cc_date, cc_prl_price) -> pd.DataFrame:
-    pkl_path = get_pickle_path(path)
+def load_prl_data() -> pd.DataFrame:
+    pkl_path = get_pickle_path(PATH_PRL_DATA)
     if os.path.exists(pkl_path):
         print(f"Loading data from {pkl_path}")
         return pd.read_pickle(pkl_path)
     
-    print(f"Loading data from {path}")
+    print(f"Loading data from {PATH_PRL_DATA}")
     df = pd.read_excel(
-        path,
-        usecols=["DATE_FROM", "PRODUCTNAME", cr_prl_price],
+        PATH_PRL_DATA,
+        usecols=["DATE_FROM", "PRODUCTNAME", CR.PRL_PRICE],
         parse_dates=["DATE_FROM"],
         engine="openpyxl",           # falls du vorher kein engine explizit hattest
     )
@@ -24,16 +26,16 @@ def load_prl_data(path, cr_prl_price, cc_date, cc_prl_price) -> pd.DataFrame:
         .astype(int)    
     )
     
-    df[cc_date] = (
+    df[CC.DATE] = (
         df["DATE_FROM"].dt.floor("D")  
         + pd.to_timedelta(df["start_hour"], unit="H")
     )
 
-    df[cc_date] = df[cc_date].dt.tz_localize("Europe/Berlin")
-    df.set_index(cc_date, inplace=True)
+    df[CC.DATE] = df[CC.DATE].dt.tz_localize("Europe/Berlin")
+    df.set_index(CC.DATE, inplace=True)
 
-    df = df[[cr_prl_price]]   
-    df.columns = [cc_prl_price]
+    df = df[[CR.PRL_PRICE]]   
+    df.columns = [CC.PRL_PRICE]
     
     df.to_pickle(pkl_path)
     print(f"Data saved to {pkl_path}")

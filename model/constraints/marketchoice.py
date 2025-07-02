@@ -2,7 +2,7 @@ import pyomo.environ as pyo
 from model.constraints.market import add_market_mode_constraints
 from model.constraints.prl import add_prl_mode_constraints
 from model.constraints.srl import add_srl_mode_constraints
-from config import MARKET_SWITCH, PRL_SWITCH, SRL_SWITCH
+from params import PRL_SWITCH, SRL_SWITCH
 
 def add_market_choice_constraint(model, time_points):
 

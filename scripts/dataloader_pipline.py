@@ -1,15 +1,9 @@
 import time
 import pandas as pd
 from utils import convert_datetime_to_string
-from config import (
+from params import (
     START_DATE,
     END_DATE,
-    PATH_DA_AUC_DATA,
-    PATH_PRL_DATA,
-    PATH_SRL_POWER_DATA,
-    PATH_SRL_WORK_DATA,
-    PATH_INTRADAY_DATA,
-    SPECIFIC_AGING_COST
 )
 from config_column_names import ColumnNamesRaw as CR,  ColumnNamesClean as CC
 from dataloader import (
@@ -25,16 +19,16 @@ logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-def create_dataframe(start_date, end_date, debug=False):
+def create_dataframe(start_date, end_date, specific_aging_cost, debug=False):
     df_master = create_master_df(start_date, end_date)
 
     loader_tasks = [
-        (load_compared_auc_data, (PATH_DA_AUC_DATA, PATH_INTRADAY_DATA, CR.ENERGIE_CHARTS_DATE, CR.DA_AUC_PRICE, CC.DA_AUC_PRICE, CR.ID_PRICE_AUC_15min, CR.ID_PRICE_AUC_IDA1_GEKOPPELT, CC.ID_AUC_PRICE)),
-        #(load_da_auc_data,      (PATH_DA_AUC_DATA, CR.ENERGIE_CHARTS_DATE, CR.DA_AUC_PRICE, CC.DA_AUC_PRICE)),
-        #(load_id_auc_data,      (PATH_INTRADAY_DATA, CR.ENERGIE_CHARTS_DATE, CR.ID_PRICE_AUC_15min, CR.ID_PRICE_AUC_IDA1_GEKOPPELT, CC.ID_AUC_PRICE)),
-        (load_prl_data,          (PATH_PRL_DATA, CR.PRL_PRICE, CC.DATE, CC.PRL_PRICE)),
-        (load_srl_power_data,    (PATH_SRL_POWER_DATA, CR.SRL_POWER_PRICE, CC.SRL_POWER_PRICE_POS, CC.SRL_POWER_PRICE_NEG)),
-        (load_srl_work_cbmp_data, (PATH_SRL_WORK_DATA, SPECIFIC_AGING_COST, CR.SRL_NEG_WORK_CBMP, CR.SRL_POS_WORK_CBMP, CC.SRL_NEG_WORK_CBMP, CC.SRL_POS_WORK_CBMP)),
+        (load_compared_auc_data, ()),
+        #(load_da_auc_data,      ()),
+        #(load_id_auc_data,      ()),
+        (load_prl_data,          ()),
+        (load_srl_power_data,    ()),
+        (load_srl_work_cbmp_data, (specific_aging_cost, )),
     ]
 
     for loader, args in loader_tasks:

@@ -1,0 +1,58 @@
+# config.yml
+# Steuerzentrale für alle variablen Szenario-Parameter.
+
+# ----------------------------------------------------
+# Allgemeine Einstellungen für den Simulationslauf
+# ----------------------------------------------------
+run_settings:
+  start_date: "2023-01-01"
+  end_date: "2023-01-06"
+  scenario_name: "Basisszenario 2023"
+
+# ----------------------------------------------------
+# Technische Parameter des Batteriespeichers
+# ----------------------------------------------------
+battery:
+  capacity_mwh: 1.2
+  system_power_mw: 1.2
+  efficiency: 0.9
+  lifetime_cycles: 9000
+
+# ----------------------------------------------------
+# Marktteilnahme und Strategie-Faktoren
+# ----------------------------------------------------
+markets:
+  day_ahead: 1                  # 1 für aktiv, 0 für inaktiv
+  primary_control_reserve: 1
+  secondary_control_reserve: 1
+
+  srl_profit_factor:
+    positive: 1.5
+    negative: 1.0
+
+# ----------------------------------------------------
+# Ökonomische Annahmen (CAPEX und OPEX)
+# ----------------------------------------------------
+costs:
+# Einmalige Investitionskosten (CAPEX)
+  capex:
+    specific_battery_invest: 180000         # €/MWh
+    specific_inverter_invest: 20000         # €/MW
+    specific_transformer_invest: 25000      # €/MW
+    specific_construction_allowance: 50000  # €/MW
+    specific_grid_connection: 5000          # €/MW
+
+  # Laufende jährliche Betriebskosten (OPEX)
+  opex:
+    insurance_rate: 0.01                      # % der Investitionskosten
+    specific_technical_management: 3000     # €/MW
+    specific_maintenance: 3000                # €/MW
+    specific_repairs: 3000                    # €/MW
+    specific_measurements: 3000               # €/MW
+    accounting: 3000                          # € (fix pro Jahr)
+
+  # Steuern und Abschreibung
+  taxes:
+    tax_rate: 0.20
+    depreciation_years: 10
+

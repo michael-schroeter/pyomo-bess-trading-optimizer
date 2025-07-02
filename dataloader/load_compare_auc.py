@@ -2,10 +2,7 @@ import numpy as np
 import pandas as pd
 from dataloader.load_da_auc import load_da_auc_data
 from dataloader.load_id_auc import load_id_auc_data
-from config import (
-    PATH_DA_AUC_DATA,
-    PATH_INTRADAY_DATA,
-)
+
 from config_column_names import ColumnNamesRaw as CR,  ColumnNamesClean as CC
 
 
@@ -29,26 +26,19 @@ def compare_da_id_prices(da_df: pd.DataFrame, id_df: pd.DataFrame) -> pd.DataFra
     return result
 
 
-def load_compared_auc_data(path_da, path_id, cr_energie_charts_date, cr_da_auc_price, cc_da_auc_price, cr_id_price_auc_15min, cr_id_price_auc_ida1_gekoppelt, cc_id_auc_price) -> pd.DataFrame:
+def load_compared_auc_data() -> pd.DataFrame:
 
-    da_df = load_da_auc_data(path_da, cr_energie_charts_date, cr_da_auc_price, cc_da_auc_price)
-    id_df = load_id_auc_data(path_id, cr_energie_charts_date, cr_id_price_auc_15min, cr_id_price_auc_ida1_gekoppelt, cc_id_auc_price )
+    da_df = load_da_auc_data()
+    id_df = load_id_auc_data()
 
     return compare_da_id_prices(da_df, id_df)
 
 
 if __name__ == "__main__":
 
-    da = load_da_auc_data(PATH_DA_AUC_DATA,
-                        CR.ENERGIE_CHARTS_DATE,
-                        CR.DA_AUC_PRICE,
-                        CC.DA_AUC_PRICE)
+    da = load_da_auc_data()
 
-    id = load_id_auc_data(PATH_INTRADAY_DATA,
-                        CR.ENERGIE_CHARTS_DATE,
-                        CR.ID_PRICE_AUC_15min,
-                        CR.ID_PRICE_AUC_IDA1_GEKOPPELT,
-                        CC.ID_AUC_PRICE)
+    id = load_id_auc_data()
 
     df_compare = compare_da_id_prices(da, id)
     print(df_compare.head())

@@ -1,5 +1,5 @@
 import pyomo.environ as pyo
-from config import (
+from params import (
     SYSTEM_POWER,
     CHARGE_RATE,
 )

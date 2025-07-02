@@ -1,8 +1,8 @@
 import os
 from datetime import datetime
 import pandas as pd
-from config import SYSTEM_POWER
-import config
+from params import SYSTEM_POWER
+import params
 import inspect
 
 
@@ -43,9 +43,9 @@ def get_pickle_path(source_path: str) -> str:
 def get_config_as_dict() -> dict:
 
     config_data = {}
-    for name, value in config.__dict__.items():
+    for name, value in params.__dict__.items():
         if name.isupper():
-            if isinstance(value, config.Path):
+            if isinstance(value, params.Path):
                 config_data[name] = str(value)
             else:
                 config_data[name] = value

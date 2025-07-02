@@ -9,9 +9,10 @@ from model.model_builder import setup_model, solve_model
 from result_processing.pyomo_extractor import add_model_timeseries_results_to_df, add_model_atrs_results_to_df
 from result_processing.result_export import export_results
 from scripts.dataloader_pipline import create_dataframe
-from config import (
+from params import (
     START_DATE,
     END_DATE,
+    SPECIFIC_AGING_COST,
 )
 from utils import get_config_as_dict
 
@@ -42,7 +43,7 @@ def build_models_by_year(df_data: pd.DataFrame) -> Dict[int, object]:
 
 
 if __name__ == "__main__":
-    df = create_dataframe(START_DATE, END_DATE, debug=False)
+    df = create_dataframe(START_DATE, END_DATE, SPECIFIC_AGING_COST, debug=False)
     models_by_year = build_models_by_year(df)
 
     df_timeseries = add_model_timeseries_results_to_df(df, models_by_year)

@@ -1,19 +1,22 @@
 import os
 import pandas as pd
 from utils import get_pickle_path
+from config_column_names import ColumnNamesRaw as CR, ColumnNamesClean as CC
+from config import (
+    PATH_SRL_POWER_DATA
+)
 
 
-
-def load_srl_power_data(path, cr_srl_power_price, cc_srl_power_price_pos, cc_srl_power_price_neg) -> pd.DataFrame:
-    pkl_path = get_pickle_path(path)
+def load_srl_power_data() -> pd.DataFrame:
+    pkl_path = get_pickle_path(PATH_SRL_POWER_DATA)
     if os.path.exists(pkl_path):
         print(f"Loading data from {pkl_path}")
         return pd.read_pickle(pkl_path)
     
-    print(f"Loading data from {path}")
+    print(f"Loading data from {PATH_SRL_POWER_DATA}")
     df = pd.read_excel(
-        path,
-        usecols=['DATE_FROM', 'DATE_TO', 'PRODUCT', cr_srl_power_price],
+        PATH_SRL_POWER_DATA,
+        usecols=['DATE_FROM', 'DATE_TO', 'PRODUCT', CR.SRL_POWER_PRICE],
         parse_dates=['DATE_FROM', 'DATE_TO'],
         engine='openpyxl',
     )
@@ -31,13 +34,13 @@ def load_srl_power_data(path, cr_srl_power_price, cc_srl_power_price_pos, cc_srl
 
     df_wide = (
         df
-        .set_index('direction', append=True)[cr_srl_power_price]
+        .set_index('direction', append=True)[CR.SRL_POWER_PRICE]
         .unstack('direction')
     )
 
     df_wide.columns = [
-       cc_srl_power_price_pos if d == 'POS'
-        else cc_srl_power_price_neg
+       CC.SRL_POWER_PRICE_POS if d == 'POS'
+        else CC.SRL_POWER_PRICE_NEG
         for d in df_wide.columns
     ]
 

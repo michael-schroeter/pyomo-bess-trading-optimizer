@@ -3,17 +3,17 @@ import pandas as pd
 import pickle
 from utils import convert_datetime_to_string 
 from config import (
-    RESULTS_FILE_NAME_EXCEL,
-    RESULTS_FILE_NAME_PICKLE,
     RESULTS_DIR
 )
+from .filename_creator import create_filename
 
 def export_results(df_timeseries: pd.DataFrame,
                    df_attrs: pd.DataFrame,
                    config_data: dict,  
                    results_dir: Path = RESULTS_DIR,
-                   excel_name: str = RESULTS_FILE_NAME_EXCEL,
-                   pickle_name: str = RESULTS_FILE_NAME_PICKLE):
+                   excel_name: str = create_filename() + '.xlsx',
+                   pickle_name: str = create_filename() + '.pkl'
+                   ):
 
     excel_path = results_dir / excel_name
     pickle_path = results_dir / pickle_name
