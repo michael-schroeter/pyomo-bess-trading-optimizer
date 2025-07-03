@@ -1,9 +1,10 @@
 import pyomo.environ as pyo
 from params import (
     EFFICIENCY,
-)   
+)
 from config import SPECIFIC_PRL_ENERGY_NEED_4H_CYCLE
 
+import pyomo.environ as pyo
 
 def define_charge_discharge_expr(model):
 
@@ -31,8 +32,8 @@ def define_charge_discharge_expr(model):
 
 
     def srl_neg_charge(m, t):
-        if m.p_SRL_PRICE_NEG[t] != 0:
-            return m.e_SRL_POWER_NEG[t] * 15/60
+        if m.p_SRL_WORK_PRICE_NEG[t] != 0:
+            return m.e_SRL_POWER_NEG[t] * 15/60 
         else:
             return 0
     model.e_SRL_NEG_CHARGE = pyo.Expression(model.T, rule=srl_neg_charge)
@@ -42,8 +43,8 @@ def define_charge_discharge_expr(model):
 
 
     def srl_pos_discharge(m, t):
-        if m.p_SRL_PRICE_POS[t] != 0:
-            return m.e_SRL_POWER_POS[t] * 15/60
+        if m.p_SRL_WORK_PRICE_POS[t] != 0:
+            return m.e_SRL_POWER_POS[t] * 15/60 
         else:
             return 0
     model.e_SRL_POS_DISCHARGE = pyo.Expression(model.T, rule=srl_pos_discharge)
@@ -54,7 +55,7 @@ def define_charge_discharge_expr(model):
 
     def total_charge(m, t):
         return (m.e_MARKET_CHARGE[t] + m.e_PRL_CHARGE[t] / 2 +
-                m.e_SRL_NEG_CHARGE[t])
+               m.e_SRL_NEG_CHARGE[t])
     model.e_TOTAL_CHARGE = pyo.Expression(model.T, rule=total_charge)
     model.e_TOTAL_CHARGE_SUM = pyo.Expression(
         expr=sum(model.e_TOTAL_CHARGE[t] for t in model.T)
@@ -62,7 +63,7 @@ def define_charge_discharge_expr(model):
 
     def total_discharge(m, t):
         return (m.e_MARKET_DISCHARGE[t] + m.e_PRL_CHARGE[t] / 2 +
-                 + m.e_SRL_POS_DISCHARGE[t]) 
+                 m.e_SRL_POS_DISCHARGE[t]) 
     model.e_TOTAL_DISCHARGE = pyo.Expression(model.T, rule=total_discharge)
     model.e_TOTAL_DISCHARGE_SUM = pyo.Expression(
         expr=sum(model.e_TOTAL_DISCHARGE[t] for t in model.T)

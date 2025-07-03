@@ -3,7 +3,7 @@ from pathlib import Path
 
 #Data Config
 START_DATE = "2023-01-01" #included
-END_DATE = "2023-01-06" #excluded
+END_DATE = "2023-01-04" #excluded
 
 #Battery Config
 BAT_CAPACITY = 1.2 #MWh
