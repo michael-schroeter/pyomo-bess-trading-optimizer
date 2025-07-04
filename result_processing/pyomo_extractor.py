@@ -1,6 +1,6 @@
 import pandas as pd
 import pyomo.environ as pyo
-from config_column_names import ColumnNamesClean as CC	
+from config_column_names import ColumnNamesClean as CC
 
 
 
@@ -16,13 +16,13 @@ def add_model_timeseries_results_to_df(template_df, models_by_year):
         CC.SRL_POWER_NEG:   lambda m, t: m.e_SRL_POWER_NEG[t],
         CC.SRL_POWER_POS:   lambda m, t: m.e_SRL_POWER_POS[t],
         CC.BAT_SOC:         lambda m, t: m.v_BAT_SOC[t],
-        'CHARGE':           lambda m, t: m.e_TOTAL_CHARGE[t],
-        'DISCHARGE':        lambda m, t: m.e_TOTAL_DISCHARGE[t],
-        'MARKET_CHARGE':    lambda m, t: m.e_MARKET_CHARGE[t],
-        'MARKET_DISCHARGE': lambda m, t: m.e_MARKET_DISCHARGE[t],
-        'PRL_CHARGE/DISCHARGE':     lambda m, t: m.e_PRL_CHARGE[t],
-        'SRL_NEG_CHARGE': lambda m, t: m.e_SRL_NEG_CHARGE[t],
-        'SRL_POS_DISCHARGE': lambda m, t: m.e_SRL_POS_DISCHARGE[t],
+        CC.MARKET_CHARGE:    lambda m, t: m.e_MARKET_CHARGE[t],
+        CC.MARKET_DISCHARGE: lambda m, t: m.e_MARKET_DISCHARGE[t],
+        CC.PRL_CHARGE_DISCHARGE:     lambda m, t: m.e_PRL_CHARGE[t],
+        CC.SRL_NEG_CHARGE: lambda m, t: m.e_SRL_NEG_CHARGE[t],
+        CC.SRL_POS_DISCHARGE: lambda m, t: m.e_SRL_POS_DISCHARGE[t],
+        CC.TOTAL_CHARGE:           lambda m, t: m.e_TOTAL_CHARGE[t],
+        CC.TOTAL_DISCHARGE:        lambda m, t: m.e_TOTAL_DISCHARGE[t],
         CC.REVENUE_MARKET:  lambda m, t: m.e_REVENUE_MARKET[t],
         CC.REVENUE_PRL:     lambda m, t: m.e_REVENUE_PRL[t],
         CC.REVENUE_SRL:     lambda m, t: m.e_REVENUE_SRL[t],
@@ -42,29 +42,32 @@ def add_model_timeseries_results_to_df(template_df, models_by_year):
 
 def add_model_atrs_results_to_df(models_by_year):
     attrs = {
+        #market/regelleistung
+        CC.BUY_VOL_SUM: lambda m: pyo.value(sum(m.v_BUY_VOL[t] for t in m.T)),
+        CC.SELL_VOL_SUM: lambda m: pyo.value(sum(m.v_SELL_VOL[t] for t in m.T)),
+        CC.PRL_POWER_SUM: lambda m: pyo.value(sum(m.e_PRL_POWER[t] for t in m.T)),
+        CC.SRL_POWER_NEG_SUM: lambda m: pyo.value(sum(m.e_SRL_POWER_NEG[t] for t in m.T)),
+        CC.SRL_POWER_POS_SUM: lambda m: pyo.value(sum(m.e_SRL_POWER_POS[t] for t in m.T)),
 
-        CC.PRL_POWER_SUM: lambda m: pyo.value(m.e_PRL_POWER_SUM),
-        CC.SRL_POWER_NEG_SUM: lambda m: pyo.value(m.e_SRL_POWER_NEG_SUM),
-        CC.SRL_POWER_POS_SUM: lambda m: pyo.value(m.e_SRL_POWER_POS_SUM),
+        #Money
         CC.AGING_COST_SUM: lambda m: pyo.value(m.e_AGING_COST_SUM),
-
-
         CC.REVENUE_MARKET_SUM: lambda m: pyo.value(m.e_REVENUE_MARKET_SUM),
         CC.REVENUE_PRL_SUM: lambda m: pyo.value(m.e_REVENUE_PRL_SUM),
         CC.REVENUE_SRL_SUM: lambda m: pyo.value(m.e_REVENUE_SRL_SUM),
         CC.REVENUE_TOTAL_SUM: lambda m: pyo.value(m.e_TOTAL_REVENUE_SUM),
         CC.TAXES_SUM: lambda m: pyo.value(m.e_TAX),
         CC.OBJ: lambda m: pyo.value(m.OBJ),
-        #CC.REVENUE_PRL_SUM:     
-        #CC.REVENUE_SRL_SUM:  
-        #CC.TOTAL_REVENUE_SUM:
-        #CC.TAXES_SUM:        
-        #CC.OBJ:              
 
+        #charge/discharge
+        CC.MARKET_CHARGE_SUM: lambda m: pyo.value(m.e_MARKET_CHARGE_SUM),
+        CC.MARKET_DISCHARGE_SUM: lambda m: pyo.value(m.e_MARKET_DISCHARGE_SUM),
+        CC.PRL_CHARGE_DISCHARGE_SUM: lambda m: pyo.value(m.e_PRL_CHARGE_SUM),
+        CC.SRL_NEG_CHARGE_SUM: lambda m: pyo.value(m.e_SRL_NEG_CHARGE_SUM),
+        CC.SRL_POS_DISCHARGE_SUM: lambda m: pyo.value(m.e_SRL_POS_DISCHARGE_SUM),
+        CC.TOTAL_CHARGE_SUM: lambda m: pyo.value(m.e_TOTAL_CHARGE_SUM),
+        CC.TOTAL_DISCHARGE_SUM: lambda m: pyo.value(m.e_TOTAL_DISCHARGE_SUM),
+        CC.BATTERY_CYCLES: lambda m: pyo.value(m.e_BATTERY_CYCLES),
 
-
-        #CC.OBJ:                   lambda m: pyo.value(m.OBJ),
-        #CC.TOTAL_REVENUE_SUM:     lambda m: pyo.value(m.e_TOTAL_REVENUE_SUM),
     }
 
     data = {}

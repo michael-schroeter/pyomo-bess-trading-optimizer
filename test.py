@@ -1,5 +1,15 @@
-#Export Config
-RESULTS_DIR = Path("results")
-FILE_NAME = f"results_market-{MARKET_SWITCH}_prl-{PRL_SWITCH}_srl-{SRL_SWITCH}_{BAT_CAPACITY}-MWH_{SYSTEM_POWER}MW_{BAT_PRICE}€_LC-{LIFETIME_CYCLES}n_n-{EFFICIENCY}%_{START_DATE}to{END_DATE}"
-RESULTS_FILE_NAME_EXCEL =  f"{FILE_NAME}.xlsx"
-RESULTS_FILE_NAME_PICKLE = f"{FILE_NAME}.pkl"
+# opex
+# capex
+# abschreibungen (capex/laufzeit)
+
+# revenue (sell-buy)
+# taxes ((revenue - abschreibungen - opex) * 0.25)
+# verschleiß = ...
+
+# obj = profit - taxes - verschleiß
+
+
+## will ich zusätzlich
+# net_cashflow(a) = revenue(a) - opex(a) - taxes(a)
+# cummulative_cashflow(a)  = capex + net_cashflow(a)
+

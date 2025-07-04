@@ -11,14 +11,14 @@ def define_charge_discharge_expr(model):
     def market_charge(m, t):
         return m.v_BUY_VOL[t] * EFFICIENCY
     model.e_MARKET_CHARGE = pyo.Expression(model.T, rule=market_charge)
-    model.e_DA_AUC_CHARGE_SUM = pyo.Expression(
+    model.e_MARKET_CHARGE_SUM = pyo.Expression(
         expr=sum(model.e_MARKET_CHARGE[t] for t in model.T)
     )
 
     def market_discharge(m, t):
         return m.v_SELL_VOL[t] / EFFICIENCY
     model.e_MARKET_DISCHARGE = pyo.Expression(model.T, rule=market_discharge)
-    model.e_DA_AUC_DISCHARGE_SUM = pyo.Expression(
+    model.e_MARKET_DISCHARGE_SUM = pyo.Expression(
         expr=sum(model.e_MARKET_DISCHARGE[t] for t in model.T)
     )
 

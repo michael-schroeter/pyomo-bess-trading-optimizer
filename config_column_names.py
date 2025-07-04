@@ -11,6 +11,8 @@ class ColumnNamesRaw:
     SRL_POS_WORK_CBMP              = 'Price [EUR/MWh] Up' 
 
 class ColumnNamesClean:
+
+## timeseries
     #data
     DATE                 = 'Date'
     DA_AUC_PRICE            = 'DA'
@@ -26,30 +28,55 @@ class ColumnNamesClean:
     SRL_NEG_WORK_CBMP   = 'SRL Work Price Neg'
     SRL_POS_WORK_CBMP   = 'SRL Work Price Pos'
 
-    #results
+    #market/regelleistung
     BUY_VOL              = 'Buy Volume'
     SELL_VOL             = 'Sell Volume'
-    BAT_SOC              = 'Battery SOC'
     PRL_POWER            = 'PRL Power'
     SRL_POWER_POS        = 'SRL Power Pos'
     SRL_POWER_NEG        = 'SRL Power Neg'
-    AGING_COST           = 'Aging Cost'
+
+    #charge/discharge
+    BAT_SOC              = 'Battery SOC'
+    MARKET_CHARGE       = 'Market Charge'
+    MARKET_DISCHARGE    = 'Market Discharge'
+    PRL_CHARGE_DISCHARGE          = 'PRL Charge'
+    SRL_NEG_CHARGE      = 'SRL Neg Charge'
+    SRL_POS_DISCHARGE   = 'SRL Pos Discharge'
+    TOTAL_CHARGE        = 'Total Charge'
+    TOTAL_DISCHARGE     = 'Total Discharge'
     
+    #money
     REVENUE_MARKET       = 'Revenue Market'
     REVENUE_PRL          = 'Revenue PRL'    
     REVENUE_SRL          = 'Revenue SRL'
     REVENUE_TOTAL        = 'Total Revenue'
+    AGING_COST           = 'Aging Cost'
 
-    #attrs
+
+## attrs
+    #market/regelleistung
+    BUY_VOL_SUM         = 'Buy Volume Sum'
+    SELL_VOL_SUM        = 'Sell Volume Sum'
     PRL_POWER_SUM       = 'PRL Power Sum'
     SRL_POWER_POS_SUM   = 'SRL Power Pos Sum'
     SRL_POWER_NEG_SUM   = 'SRL Power Neg Sum'
-    AGING_COST_SUM      = 'Aging Cost Sum'
 
+    #charge/discharge
+    MARKET_CHARGE_SUM   = 'Market Charge Sum'
+    MARKET_DISCHARGE_SUM = 'Market Discharge Sum'
+    PRL_CHARGE_DISCHARGE_SUM      = 'PRL Charge Sum'
+    SRL_NEG_CHARGE_SUM  = 'SRL Neg Charge Sum'
+    SRL_POS_DISCHARGE_SUM = 'SRL Pos Discharge Sum'
+    TOTAL_CHARGE_SUM    = 'Total Charge Sum'
+    TOTAL_DISCHARGE_SUM = 'Total Discharge Sum'
+    BATTERY_CYCLES      = 'Battery Cycles'
 
+    #money
     REVENUE_MARKET_SUM  = 'Revenue Market Sum'
     REVENUE_PRL_SUM     = 'Revenue PRL Sum'
     REVENUE_SRL_SUM     = 'Revenue SRL Sum'  
     REVENUE_TOTAL_SUM   = 'Total Revenue Sum'
     TAXES_SUM           = 'Taxes Sum'
     OBJ                 = 'Objective Value'
+    AGING_COST_SUM      = 'Aging Cost Sum'
+
