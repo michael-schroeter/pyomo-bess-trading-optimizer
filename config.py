@@ -12,5 +12,5 @@ PATH_SRL_WORK_DATA = 'data/srl_work_cbmp_2022-07-01 - 2025-06-29.pkl'
 RESULTS_DIR = Path("results")
 
 
-SPECIFIC_PRL_ENERGY_NEED_4H_CYCLE = (1/3) / 16  # MWh/MW pro 15min
+SPECIFIC_PRL_ENERGY_NEED_15MIN = (1/3) / 16  # MWh/MW pro 15min
 
