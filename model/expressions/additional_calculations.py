@@ -9,6 +9,15 @@ def define_additional_sums_expr(model):
         return (m.e_TOTAL_CHARGE_SUM + m.e_TOTAL_DISCHARGE_SUM) / (2 * BAT_CAPACITY)
     model.e_BATTERY_CYCLES = pyo.Expression(rule=calc_battery_cycles)
 
+    def net_cashflow(m):
+        # calculate net cashflow
+        
+        revenue = m.e_TOTAL_REVENUE_SUM
+        taxes = m.e_TAX
+        opex = m.p_OPEX
+        return (revenue - taxes - opex)
+    model.e_NET_CASHFLOW = pyo.Expression(rule=net_cashflow)
+
 
 
 def define_additional_timeseries_expr(model):

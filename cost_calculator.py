@@ -17,7 +17,7 @@ from config_cost import (
 from params import BAT_CAPACITY, SYSTEM_POWER
 
 
-def calculate_investment_costs():
+def calculate_capex():
     battery_cost = SPECIFIC_BATTERY_INVEST * BAT_CAPACITY
     inverter_cost = SPECIFIC_INVERTER_INVEST * SYSTEM_POWER 
     transformer_cost = SPECIFIC_TRANSFORMER_INVEST * SYSTEM_POWER
@@ -32,8 +32,8 @@ def calculate_investment_costs():
     return total_invest
 
 
-def calculate_annual_cost():
-    total_invest = calculate_investment_costs()
+def calculate_opex():
+    total_invest = calculate_capex()
     insurance_cost = INSURANCE_RATE * (total_invest - SPECIFIC_CONSTRUCTION_ALLOWANCE_INVEST * SYSTEM_POWER) # nur Hardware wird versichert
     technical_management_cost = SPECIFIC_TECHNICAL_MANAGEMENT_COST * SYSTEM_POWER
     maintenance_cost = SPECIFIC_MAINTENANCE_COST * SYSTEM_POWER
@@ -50,6 +50,5 @@ def calculate_annual_cost():
 
 
 def calculate_depreciation_amount():
-    total_invest = calculate_investment_costs()
-    annual_cost = calculate_annual_cost()
-    return (total_invest / DEPRECIATION_YEARS) + annual_cost
+    total_invest = calculate_capex()
+    return (total_invest / DEPRECIATION_YEARS)

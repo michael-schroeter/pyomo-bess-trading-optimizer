@@ -15,6 +15,3 @@ class AffrCbmpLoader(EntsoeBaseLoader):
             "controlArea_Domain": "10YDE-VE-------2",
         })
 
-    def parse(self, xml_string: str) -> pd.DataFrame:
-        """Delegiert das Parsen an die zuständige Parser-Funktion."""
-        return parse_affr_cbmp(xml_string)
