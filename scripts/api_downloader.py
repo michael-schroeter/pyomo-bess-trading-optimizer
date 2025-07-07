@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
         for day in pd.date_range(start=START_DATE, end=END_DATE, freq='D'):
             day_str = day.strftime('%Y-%m-%d')
-            output_filepath = os.path.join(output_dir, f"{day_str}.csv")
+            output_filepath = os.path.join(output_dir, f"{day_str}.xml")
 
             if os.path.exists(output_filepath):
                 continue
@@ -38,8 +38,13 @@ if __name__ == "__main__":
                 period_start = day.strftime('%Y%m%d0000')
                 period_end = (day + timedelta(days=1)).strftime('%Y%m%d0000')
                 
-                daily_df = loader.load(period_start=period_start, period_end=period_end)
-                daily_df.to_pickle(output_filepath)
+                xml_content = loader.load(period_start=period_start, period_end=period_end)
+
+                with open(output_filepath, 'w', encoding='utf-8') as f:
+                    f.write(xml_content)
+
+                print(f"-> Gespeichert: {output_filepath}")
+
                 time.sleep(0.5)
             except LoaderError as e:
                 print(f"FEHLER bei {day_str}: {e}")

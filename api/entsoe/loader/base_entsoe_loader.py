@@ -15,14 +15,10 @@ class EntsoeBaseLoader(BaseLoader):
     def load(self, period_start: str, period_end: str):
         self.params.update({"periodStart": period_start, "periodEnd": period_end})
         xml_data = self.client.fetch_xml(self.params)
-        return self.parse(xml_data)
+        return xml_data
 
     @abstractmethod
     def _set_document_specific_params(self):
         """Erzwingt das Setzen von dokumentspezifischen API-Parametern."""
         pass
 
-    @abstractmethod
-    def parse(self, xml_string: str):
-        """Erzwingt die Implementierung eines Parsers."""
-        pass
