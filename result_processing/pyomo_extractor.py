@@ -29,6 +29,7 @@ def add_model_timeseries_results_to_df(template_df, models_by_year):
         CC.REVENUE_SRL:     lambda m, t: m.e_REVENUE_SRL[t],
         CC.REVENUE_TOTAL:   lambda m, t: m.e_TOTAL_REVENUE[t],
         CC.AGING_COST:      lambda m, t: m.e_AGING_COST[t],
+        'BATTERY_CAPACITY': lambda m, t: m.v_BATTERY_CAPACITY[t],
     }
 
     model_results_timeseries = {}
@@ -70,6 +71,7 @@ def add_model_atrs_results_to_df(models_by_year):
         CC.TOTAL_CHARGE_SUM: lambda m: pyo.value(m.e_TOTAL_CHARGE_SUM),
         CC.TOTAL_DISCHARGE_SUM: lambda m: pyo.value(m.e_TOTAL_DISCHARGE_SUM),
         CC.BATTERY_CYCLES: lambda m: pyo.value(m.e_BATTERY_CYCLES),
+        
 
     }
 

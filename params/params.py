@@ -3,7 +3,7 @@ from pathlib import Path
 TITLE = "tst"
 
 #Data Config
-START_DATE = "2022-12-29" #included
+START_DATE = "2022-12-28" #included
 END_DATE = "2023-01-03" #excluded
 
 ##Battery Hardware
@@ -11,6 +11,7 @@ INITIAL_BATTERY_CAPACITY = 1 #MWh
 SYSTEM_POWER = 1 #MW (1MW = 1MWh/1h) # AC Seitig
 LIFETIME_CYCLES = 9000
 EFFICIENCY = 0.8 # AC Seitig vom Umrichter. einseitiger Wirkungsgrad (jeweils Lade- und Entladeverluste)
+DEGRADATION_FACTOR_MWH = 0.1  # MWh pro MWh durchlaufener Energie; Quelle Torsten Batterieinfos
 CHARGE_RATE = SYSTEM_POWER * (15/60) 
 
 

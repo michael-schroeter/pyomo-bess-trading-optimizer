@@ -3,6 +3,7 @@ from .prl import add_prl_soc_constraints
 from .srl import add_srl_soc_constraints
 from .cumulative_soc import add_cumulative_soc_constraints
 from .tax import add_tax_constraints
+from .battery_degradation import add_battery_degradation_constraints
 
 
 def add_all_constraints(model, time_points):
@@ -11,4 +12,5 @@ def add_all_constraints(model, time_points):
     add_srl_soc_constraints(model)
     add_tax_constraints(model)
     add_cumulative_soc_constraints(model)
+    add_battery_degradation_constraints(model)
 

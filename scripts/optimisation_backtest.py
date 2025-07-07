@@ -12,20 +12,21 @@ from scripts.dataloader_pipline import create_dataframe
 from params.params import (
     START_DATE,
     END_DATE,
+    INITIAL_BATTERY_CAPACITY,
 )
 from utils import get_config_as_dict
 from cost_calculator import calculate_specific_aging_cost
 
 
-def main_optimisation(df_data_period):
-    model = setup_model(df_data_period)
+def main_optimisation(df_data_period, initial_battery_capacity_for_year):
+    model = setup_model(df_data_period, initial_battery_capacity_for_year)
     solve_model(model)
     print(f" profit: {pyo.value(model.OBJ)}")
     return model
 
 
 def build_models_by_year(df_data: pd.DataFrame) -> Dict[int, object]:
-
+    current_start_battery_capacity = INITIAL_BATTERY_CAPACITY
     models_by_year = {}
     for year_timestamp, df_data_year in df_data.groupby(pd.Grouper(freq='YE')):
         if df_data_year.empty:
@@ -35,9 +36,12 @@ def build_models_by_year(df_data: pd.DataFrame) -> Dict[int, object]:
         print(f"Baue Modell für Jahr {year} ({df_data_year.index[0].date()} bis {df_data_year.index[-1].date()})")
         #measure
         start_time = time.time()
-        model_year = main_optimisation(df_data_year)
+        model_year = main_optimisation(df_data_year, current_start_battery_capacity)
         print(f"{year}:  {time.time() - start_time:.2f} Sekunden")
         models_by_year[year] = model_year
+        final_battery_capacity_of_year = pyo.value(model_year.v_BATTERY_CAPACITY[model_year.T.last()])
+        current_start_battery_capacity = final_battery_capacity_of_year
+        print(current_start_battery_capacity)
 
     return models_by_year
 

@@ -3,7 +3,7 @@ from typing import Mapping, Any
 from config_column_names import ColumnNamesClean as CC
 from cost_calculator import calculate_opex
 
-def define_params(model: pyo.ConcreteModel, df_data_period) -> None:
+def define_params(model: pyo.ConcreteModel, df_data_period, initial_battery_capacity_for_year) -> None:
     
     #market prices
     higher_market_price_dict = df_data_period[CC.HiGHER_MARKET_PRICE].to_dict()
@@ -25,3 +25,7 @@ def define_params(model: pyo.ConcreteModel, df_data_period) -> None:
     model.p_SRL_WORK_PRICE_POS = pyo.Param(model.T, initialize=srl_work_price_pos_dict)
 
     model.p_OPEX = pyo.Param(initialize=calculate_opex())
+
+    model.p_INITIAL_BATTERY_CAPACITY_YEAR = pyo.Param(initialize=initial_battery_capacity_for_year)
+    print('hier scur')
+    print(pyo.value(model.p_INITIAL_BATTERY_CAPACITY_YEAR))
