@@ -14,7 +14,7 @@ from config_cost import (
 
 )
 
-from params import BAT_CAPACITY, SYSTEM_POWER
+from params.params import BAT_CAPACITY, SYSTEM_POWER
 
 
 def calculate_capex():
@@ -24,12 +24,12 @@ def calculate_capex():
     construction_allowance = SPECIFIC_CONSTRUCTION_ALLOWANCE_INVEST * SYSTEM_POWER
     grid_connection_cost = SPECIFIC_GRID_CONNECTION_INVEST * SYSTEM_POWER
 
-    total_invest = (
+    capex = (
         battery_cost + inverter_cost + transformer_cost +
         construction_allowance + grid_connection_cost
     )
     
-    return total_invest
+    return capex
 
 
 def calculate_opex():
@@ -50,5 +50,5 @@ def calculate_opex():
 
 
 def calculate_depreciation_amount():
-    total_invest = calculate_capex()
-    return (total_invest / DEPRECIATION_YEARS)
+    capex = calculate_capex()
+    return (capex / DEPRECIATION_YEARS)

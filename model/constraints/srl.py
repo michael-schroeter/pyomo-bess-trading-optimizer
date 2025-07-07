@@ -1,5 +1,5 @@
 import pyomo.environ as pyo
-from params import SYSTEM_POWER, BAT_CAPACITY
+from params.params import SYSTEM_POWER, BAT_CAPACITY, EFFICIENCY
 
 
 def add_srl_mode_constraints(model):
@@ -73,7 +73,7 @@ def add_srl_soc_constraints(model):
         else:
             relevant_t = m.T.prev(start_t)
             
-        return m.v_BAT_SOC[relevant_t] * BAT_CAPACITY >= m.v_SRL_POWER_POS[iv]
+        return m.v_BAT_SOC[relevant_t] * BAT_CAPACITY >= m.v_SRL_POWER_POS[iv] / EFFICIENCY
     
     model.c_SRL_SOC_POS = pyo.Constraint(model.D4, rule=soc_pos_rule)
 
@@ -86,6 +86,8 @@ def add_srl_soc_constraints(model):
         else:
             relevant_t = m.T.prev(start_t)
             
-        return (1 - m.v_BAT_SOC[relevant_t]) * BAT_CAPACITY >= m.v_SRL_POWER_NEG[iv]
+        return m.v_BAT_SOC[relevant_t] <= (1 - (m.v_SRL_POWER_NEG[iv] / BAT_CAPACITY) / EFFICIENCY) 
         
     model.c_SRL_SOC_NEG = pyo.Constraint(model.D4, rule=soc_neg_rule)
+
+

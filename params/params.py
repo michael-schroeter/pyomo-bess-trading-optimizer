@@ -1,16 +1,16 @@
 from pathlib import Path
 
-
+TITLE = "Bachelor-Thesis-Electricity-Market Test Überschrift"
 #Data Config
-START_DATE = "2022-01-01" #included
-END_DATE = "2022-01-04" #excluded
+START_DATE = "2022-12-29" #included
+END_DATE = "2023-01-03" #excluded
 
 #Battery Config
-BAT_CAPACITY = 1.2 #MWh
-SYSTEM_POWER = 1.2 #MW (1MW = 1MWh/1h)
+BAT_CAPACITY = 1 #MWh
+SYSTEM_POWER = 1 #MW (1MW = 1MWh/1h) # AC Seitig
 BAT_PRICE = 270000 * BAT_CAPACITY #€
 LIFETIME_CYCLES = 9000
-EFFICIENCY = 0.9 # AC Seitig vom Umrichter. einseitiger Wirkungsgrad (jeweils Lade- und Entladeverluste)
+EFFICIENCY = 0.8 # AC Seitig vom Umrichter. einseitiger Wirkungsgrad (jeweils Lade- und Entladeverluste)
 SPECIFIC_AGING_COST = BAT_PRICE / (BAT_CAPACITY * LIFETIME_CYCLES * 2) #€/(MWh durchsatz) sowohl Laden als auch Entladen
 CHARGE_RATE = SYSTEM_POWER * (15/60) 
 

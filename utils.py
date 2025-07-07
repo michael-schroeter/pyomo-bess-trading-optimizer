@@ -1,8 +1,8 @@
 import os
 from datetime import datetime
 import pandas as pd
-from params import SYSTEM_POWER
-import params
+from params.params import SYSTEM_POWER
+import params.params as params
 import inspect
 
 

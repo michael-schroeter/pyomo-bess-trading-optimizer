@@ -9,7 +9,7 @@ from model.model_builder import setup_model, solve_model
 from result_processing.pyomo_extractor import add_model_timeseries_results_to_df, add_model_atrs_results_to_df
 from result_processing.result_export import export_results
 from scripts.dataloader_pipline import create_dataframe
-from params import (
+from params.params import (
     START_DATE,
     END_DATE,
     SPECIFIC_AGING_COST,

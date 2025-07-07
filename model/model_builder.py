@@ -10,7 +10,7 @@ from model.objective import define_objective
 def solve_model(model):
     solver = pyo.SolverFactory('gurobi')
     solver.options['Threads'] = 12
-    solver.options['MIPGap'] = 0.005  # 0.5% Optimalitätslücke akzeptieren
+    solver.options['MIPGap'] = 0.05  # 0.5% Optimalitätslücke akzeptieren
 
     #solver.options['TimeLimit'] = 10  # Zeitlimit (Sekunden)
     return solver.solve(model, tee=False)

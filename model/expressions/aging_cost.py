@@ -1,5 +1,5 @@
 import pyomo.environ as pyo
-from params import (
+from params.params import (
     SPECIFIC_AGING_COST,
 )
 

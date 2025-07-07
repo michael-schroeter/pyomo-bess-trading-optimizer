@@ -1,7 +1,7 @@
 import time
 import pandas as pd
 from utils import convert_datetime_to_string
-from params import (
+from params.params import (
     START_DATE,
     END_DATE,
 )
