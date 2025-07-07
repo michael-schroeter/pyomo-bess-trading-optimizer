@@ -3,7 +3,6 @@ from config import (
     PATH_SRL_WORK_DATA,
 )
 from params.params import (
-    SPECIFIC_AGING_COST,
     PROFIT_FACTOR_SRL_POS,
     PROFIT_FACTOR_SRL_NEG,
 )
@@ -12,6 +11,8 @@ from config_column_names import (
     ColumnNamesRaw as CR,
     ColumnNamesClean as CC,
 )
+
+from cost_calculator import calculate_specific_aging_cost
 
 
 
@@ -41,7 +42,8 @@ def load_srl_work_cbmp_data(specific_aging_cost):
 
 if __name__ == "__main__":
 
-    df = load_srl_work_cbmp_data(SPECIFIC_AGING_COST)
+    specific_aging_cost = calculate_specific_aging_cost()
+    df = load_srl_work_cbmp_data(specific_aging_cost)
     print(df)
 
     df = df.loc['2023-01-01':'2023-01-02']

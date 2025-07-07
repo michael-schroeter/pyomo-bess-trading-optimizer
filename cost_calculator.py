@@ -1,4 +1,7 @@
-from config_cost import (
+from params.params import (
+    BAT_CAPACITY, 
+    LIFETIME_CYCLES,
+    SYSTEM_POWER,
     SPECIFIC_BATTERY_INVEST,
     SPECIFIC_INVERTER_INVEST,
     SPECIFIC_TRANSFORMER_INVEST,
@@ -11,10 +14,8 @@ from config_cost import (
     SPECIFIC_MEASUREMENTS_COST,
     ACCOUNTING_COST,
     DEPRECIATION_YEARS,
-
 )
 
-from params.params import BAT_CAPACITY, SYSTEM_POWER
 
 
 def calculate_capex():
@@ -52,3 +53,8 @@ def calculate_opex():
 def calculate_depreciation_amount():
     capex = calculate_capex()
     return (capex / DEPRECIATION_YEARS)
+
+
+def calculate_specific_aging_cost():
+    capex = calculate_capex()
+    return capex / (BAT_CAPACITY * LIFETIME_CYCLES * 2)  # €/(MWh throughput), both charge and discharge

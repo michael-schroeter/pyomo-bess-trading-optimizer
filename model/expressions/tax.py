@@ -1,5 +1,5 @@
 import pyomo.environ as pyo
-from config_cost import (
+from params.params import (
     TAX_RATE,
 )
 

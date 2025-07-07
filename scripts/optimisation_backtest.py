@@ -12,9 +12,9 @@ from scripts.dataloader_pipline import create_dataframe
 from params.params import (
     START_DATE,
     END_DATE,
-    SPECIFIC_AGING_COST,
 )
 from utils import get_config_as_dict
+from cost_calculator import calculate_specific_aging_cost
 
 
 def main_optimisation(df_data_period):
@@ -43,7 +43,8 @@ def build_models_by_year(df_data: pd.DataFrame) -> Dict[int, object]:
 
 
 if __name__ == "__main__":
-    df = create_dataframe(START_DATE, END_DATE, SPECIFIC_AGING_COST, debug=False)
+    specific_aging_cost = calculate_specific_aging_cost()
+    df = create_dataframe(START_DATE, END_DATE, specific_aging_cost, debug=False)
     models_by_year = build_models_by_year(df)
 
     df_timeseries = add_model_timeseries_results_to_df(df, models_by_year)
