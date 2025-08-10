@@ -8,13 +8,14 @@ import pyomo.environ as pyo
 from model.model_builder import setup_model, solve_model
 from result_processing.pyomo_extractor import add_model_timeseries_results_to_df, add_model_atrs_results_to_df
 from result_processing.result_export import export_results
-from scripts.dataloader_pipline import create_dataframe
+from scripts.dataloader_pipeline import create_dataframe
+import params.params as params
 from params.params import (
     START_DATE,
     END_DATE,
     INITIAL_BATTERY_CAPACITY,
 )
-from utils import get_config_as_dict
+from utils import get_params_as_dataframe
 from cost_calculator import calculate_specific_aging_cost
 
 
@@ -56,8 +57,8 @@ if __name__ == "__main__":
 
     #print(df_timeseries)
     print(df_attrs)
-    config_data = get_config_as_dict()
-    export_results(df_timeseries, df_attrs, config_data)
+    params_data = get_params_as_dataframe(params)
+    export_results(df_timeseries, df_attrs, params_data)
 
 
 

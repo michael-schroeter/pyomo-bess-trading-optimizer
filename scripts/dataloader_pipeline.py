@@ -14,6 +14,7 @@ from dataloader import (
     load_srl_work_cbmp_data,
 
 )
+from cost_calculator import calculate_specific_aging_cost
 import logging
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s - %(message)s')
@@ -56,12 +57,13 @@ def create_master_df(start_date, end_date):
 
 if __name__ == "__main__":
     # mesure time
+    specific_aging_cost = calculate_specific_aging_cost()
     start_time = time.time()
-    df = create_dataframe(START_DATE, END_DATE, debug=False)
+    df = create_dataframe(START_DATE, END_DATE, specific_aging_cost, debug=False)
     print(f"Berechnungszeit: {round(time.time() - start_time, 1)} Sekunden")
     print(df)
     print(len(df))
     # to excel
 
     formated_df = convert_datetime_to_string(df)       
-    formated_df.to_excel("data/market_price_data.xlsx", index=True, sheet_name="Market Price Data")
+    formated_df.to_excel("data/market price data.xlsx", index=True, sheet_name="Market Price Data")

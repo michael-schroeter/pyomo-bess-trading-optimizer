@@ -18,3 +18,5 @@ def define_variables(model):
 
 
     model.v_TAX_BASE  = pyo.Var(domain=pyo.NonNegativeReals)
+
+    model.v_BATTERY_CAPACITY = pyo.Var(model.T, within=pyo.NonNegativeReals)  

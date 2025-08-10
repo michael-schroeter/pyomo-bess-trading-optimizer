@@ -1,4 +1,6 @@
 import os
+import re
+from pathlib import Path
 from datetime import datetime
 import pandas as pd
 from params.params import SYSTEM_POWER
@@ -40,7 +42,7 @@ def get_pickle_path(source_path: str) -> str:
     return f"{base}.pkl"
 
 
-def get_config_as_dict() -> dict:
+def get_params_as_dict_old() -> dict:
 
     config_data = {}
     for name, value in params.__dict__.items():
@@ -50,3 +52,51 @@ def get_config_as_dict() -> dict:
             else:
                 config_data[name] = value
     return config_data
+
+
+def get_params_as_dataframe(params_module) -> pd.DataFrame:
+    """
+    Liest ein Konfigurationsmodul, extrahiert großgeschriebene Variablen,
+    ihre berechneten Werte und die zugehörigen Kommentare aus der Quelldatei.
+
+    Args:
+        params_module: Das importierte Konfigurationsmodul (z. B. 'params').
+
+    Returns:
+        Ein pandas DataFrame mit den Spalten 'Parameter', 'Value' und 'Kommentar'.
+    """
+    # Schritt 1: Berechnete Werte aus dem importierten Modul extrahieren
+    config_values = {}
+    for name, value in params_module.__dict__.items():
+        if name.isupper():
+            # Konvertiere Path-Objekte in Strings für die Anzeige
+            config_values[name] = str(value) if isinstance(value, Path) else value
+
+    # Schritt 2: Kommentare aus der .py-Datei als Text extrahieren
+    comments = {}
+    filepath = Path(params_module.__file__)  # Finde den Dateipfad des Moduls
+
+    # Regex: Findet eine Zeile mit VARIABLENNAME = Wert # Kommentar
+    # Gruppe 1: Der Variablenname (z.B. "INITIAL_BATTERY_CAPACITY")
+    # Gruppe 2: Der Kommentartext (z.B. "MWh")
+    regex = re.compile(r"^\s*([A-Z_][A-Z0-9_]*)\s*=[^#]*#\s*(.*)")
+
+    with open(filepath, 'r', encoding='utf-8') as f:
+        for line in f:
+            match = regex.match(line)
+            if match:
+                name = match.group(1).strip()
+                comment = match.group(2).strip()
+                if name in config_values:
+                    comments[name] = comment
+
+    # Schritt 3: Werte und Kommentare zu einer Liste zusammenfügen
+    combined_data = []
+    for name, value in config_values.items():
+        combined_data.append({
+            'Parameter': name,
+            'Value': value,
+            'Kommentar': comments.get(name, '')  # Fügt Kommentar hinzu, falls vorhanden
+        })
+
+    return pd.DataFrame(combined_data)
