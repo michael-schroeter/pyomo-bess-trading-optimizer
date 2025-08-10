@@ -2,16 +2,18 @@ from params.params import (
     INITIAL_BATTERY_CAPACITY, 
     LIFETIME_CYCLES,
     SYSTEM_POWER,
-    SPECIFIC_BATTERY_INVEST,
-    SPECIFIC_INVERTER_INVEST,
-    SPECIFIC_TRANSFORMER_INVEST,
-    SPECIFIC_CONSTRUCTION_ALLOWANCE_INVEST,
-    SPECIFIC_GRID_CONNECTION_INVEST,
+    BATTERY_INVEST,
+    INVERTER_INVEST,
+    TRANSFORMER_INVEST,
+    CONSTRUCTION_ALLOWANCE_INVEST,
+    GRID_CONNECTION_INVEST,
+    INSURANCE_EXTENSION,
+
     INSURANCE_RATE,
-    SPECIFIC_TECHNICAL_MANAGEMENT_COST,  
-    SPECIFIC_MAINTENANCE_COST,
-    SPECIFIC_REPAIRS_COST,
-    SPECIFIC_MEASUREMENTS_COST,
+    TECHNICAL_MANAGEMENT_COST,  
+    MAINTENANCE_COST,
+    REPAIRS_COST,
+    MEASUREMENTS_COST,
     ACCOUNTING_COST,
     DEPRECIATION_YEARS,
 )
@@ -19,35 +21,36 @@ from params.params import (
 
 
 def calculate_capex():
-    battery_cost = SPECIFIC_BATTERY_INVEST * INITIAL_BATTERY_CAPACITY
-    inverter_cost = SPECIFIC_INVERTER_INVEST * SYSTEM_POWER 
-    transformer_cost = SPECIFIC_TRANSFORMER_INVEST * SYSTEM_POWER
-    construction_allowance = SPECIFIC_CONSTRUCTION_ALLOWANCE_INVEST * SYSTEM_POWER
-    grid_connection_cost = SPECIFIC_GRID_CONNECTION_INVEST * SYSTEM_POWER
-
+    battery_cost = BATTERY_INVEST  
+    inverter_cost = INVERTER_INVEST   
+    transformer_cost = TRANSFORMER_INVEST  
+    construction_allowance = CONSTRUCTION_ALLOWANCE_INVEST  
+    grid_connection_cost = GRID_CONNECTION_INVEST 
+    insurance_extension = INSURANCE_EXTENSION  
     capex = (
         battery_cost + inverter_cost + transformer_cost +
-        construction_allowance + grid_connection_cost
+        construction_allowance + grid_connection_cost + 
+        insurance_extension
     )
     
     return capex
 
 
 def calculate_opex():
-    total_invest = calculate_capex()
-    insurance_cost = INSURANCE_RATE * (total_invest - SPECIFIC_CONSTRUCTION_ALLOWANCE_INVEST * SYSTEM_POWER) # nur Hardware wird versichert
-    technical_management_cost = SPECIFIC_TECHNICAL_MANAGEMENT_COST * SYSTEM_POWER
-    maintenance_cost = SPECIFIC_MAINTENANCE_COST * SYSTEM_POWER
-    repairs_cost = SPECIFIC_REPAIRS_COST * SYSTEM_POWER
-    measurements_cost = SPECIFIC_MEASUREMENTS_COST * SYSTEM_POWER
+    capex = calculate_capex()
+    insurance_cost = INSURANCE_RATE * (capex - CONSTRUCTION_ALLOWANCE_INVEST - GRID_CONNECTION_INVEST) # nur Hardware wird versichert
+    technical_management_cost = TECHNICAL_MANAGEMENT_COST 
+    maintenance_cost = MAINTENANCE_COST 
+    repairs_cost = REPAIRS_COST 
+    measurements_cost = MEASUREMENTS_COST
     accounting_cost = ACCOUNTING_COST
 
-    total_annual_costs = (
+    total_opex = (
         insurance_cost + technical_management_cost + maintenance_cost +
         repairs_cost + measurements_cost + accounting_cost
     )
     
-    return total_annual_costs
+    return total_opex
 
 
 def calculate_depreciation_amount():
@@ -58,3 +61,12 @@ def calculate_depreciation_amount():
 def calculate_specific_aging_cost():
     capex = calculate_capex()
     return capex / (INITIAL_BATTERY_CAPACITY * LIFETIME_CYCLES * 2)  # €/(MWh throughput), both charge and discharge
+
+
+
+if __name__ == "__main__":
+    print("CAPEX:", calculate_capex())
+    print("OPEX:", calculate_opex())
+    print("Depreciation Amount:", calculate_depreciation_amount())
+    print("Specific Aging Cost:", calculate_specific_aging_cost())
+    print("System Power:", SYSTEM_POWER)
