@@ -17,6 +17,7 @@ from cost_calculator import calculate_specific_aging_cost
 
 
 def load_srl_work_cbmp_data(specific_aging_cost):
+    # PATH_SRL_WORK_DATA = sind die reinen cbmp von entsoe
     df = pd.read_pickle(PATH_SRL_WORK_DATA)
     df.fillna(0, inplace=True)
     df[CC.SRL_NEG_WORK_CBMP] = 0.0
@@ -48,5 +49,5 @@ if __name__ == "__main__":
 
     df = df.loc['2023-01-01':'2023-01-02']
     df.index = df.index.strftime('%Y-%m-%d %H:%M:%S')
-    df.to_excel('srl_work_pricewedwedwedwedwedwedweds.xlsx', index=True)
+    df.to_excel('srl_work_price.xlsx', index=True)
 
