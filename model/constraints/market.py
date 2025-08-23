@@ -18,9 +18,9 @@ def add_market_mode_constraints(model):
     model.c_BUYSELL_EXCL = pyo.Constraint(model.T, rule=buysell_excl_rule)
 
     def buy_lb_rule(m, t):
-        return m.v_BUY_VOL[t] >= 0.25 * m.v_BUY_IND[t]
+        return m.v_BUY_VOL[t] >= m.v_BUY_IND[t] * 0.1/(60/15) # 0.1 MW per 15 min
     model.c_BUY_VOL_LB = pyo.Constraint(model.T, rule=buy_lb_rule)
 
     def sell_lb_rule(m, t):
-        return m.v_SELL_VOL[t] >= 0.25 * m.v_SELL_IND[t]
+        return m.v_SELL_VOL[t] >= m.v_SELL_IND[t] * 0.1/(60/15) # 0.1 MW per 15 min
     model.c_SELL_VOL_LB = pyo.Constraint(model.T, rule=sell_lb_rule)

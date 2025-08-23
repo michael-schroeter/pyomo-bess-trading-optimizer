@@ -1,5 +1,5 @@
 import pyomo.environ as pyo
-from params.params import SYSTEM_POWER, INITIAL_BATTERY_CAPACITY, EFFICIENCY
+from params.scenario_config1 import SYSTEM_POWER, INITIAL_BATTERY_CAPACITY, EFFICIENCY
 
 
 def add_srl_mode_constraints(model):
@@ -7,7 +7,7 @@ def add_srl_mode_constraints(model):
     Fügt die Constraints für den semi-kontinuierlichen SRL-Modus hinzu.
     Logik:
     - v_MODE_SRL ist der Hauptschalter.
-    - Wenn v_MODE_SRL=1, muss mindestens eine Leistung (POS oder NEG) aktiv sein.
+    - Wenn v_MODE_SRL=1, kann  keine, eine oder beide Leistungen (POS oder NEG) aktiv sein.
     - Jede aktive Leistung muss >= 1 sein (keine Werte zwischen 0 und 1).
     """
 
@@ -41,13 +41,13 @@ def add_srl_mode_constraints(model):
 
     def neg_power_logic_rule(m, d, q):
         iv = (d, q)
-        return m.v_SRL_POWER_NEG[iv] >= m.v_USE_NEG[iv]
+        return m.v_SRL_POWER_NEG[iv] >= m.v_USE_NEG[iv] # minimum of 1MW if active
     model.c_srl_neg_lower_bound = pyo.Constraint(model.D4, rule=neg_power_logic_rule)
 
 
     def pos_power_logic_rule(m, d, q):
         iv = (d, q)
-        return m.v_SRL_POWER_POS[iv] >= m.v_USE_POS[iv]
+        return m.v_SRL_POWER_POS[iv] >= m.v_USE_POS[iv] # minimum of 1MW if active
     model.c_srl_pos_lower_bound = pyo.Constraint(model.D4, rule=pos_power_logic_rule)
 
 
@@ -64,7 +64,7 @@ def add_srl_soc_constraints(model):
         for iv in model.D4
     }
 
-    def soc_pos_rule(m, d, q):
+    def soc_pos_rule(m, d, q): # srl_pos -> entladen
         iv = (d, q)
         start_t = m.interval_to_start_time[iv]
 
@@ -73,7 +73,7 @@ def add_srl_soc_constraints(model):
         else:
             relevant_t = m.T.prev(start_t)
             
-        return m.v_BAT_SOC[relevant_t] * INITIAL_BATTERY_CAPACITY >= m.v_SRL_POWER_POS[iv] / EFFICIENCY
+        return m.v_BAT_SOC[relevant_t]  >= m.v_SRL_POWER_POS[iv] / (INITIAL_BATTERY_CAPACITY * EFFICIENCY) * 1 # 1MWh pro
     
     model.c_SRL_SOC_POS = pyo.Constraint(model.D4, rule=soc_pos_rule)
 
@@ -86,8 +86,7 @@ def add_srl_soc_constraints(model):
         else:
             relevant_t = m.T.prev(start_t)
             
-        return m.v_BAT_SOC[relevant_t] <= (1 - (m.v_SRL_POWER_NEG[iv] / INITIAL_BATTERY_CAPACITY) / EFFICIENCY) 
+        return m.v_BAT_SOC[relevant_t] <= 1 - (m.v_SRL_POWER_NEG[iv] * EFFICIENCY / INITIAL_BATTERY_CAPACITY)
         
     model.c_SRL_SOC_NEG = pyo.Constraint(model.D4, rule=soc_neg_rule)
-
 

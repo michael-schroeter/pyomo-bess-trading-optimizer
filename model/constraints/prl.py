@@ -1,5 +1,5 @@
 import pyomo.environ as pyo
-from params.params import (
+from params.scenario_config1 import (
     INITIAL_BATTERY_CAPACITY,
     SYSTEM_POWER,
     EFFICIENCY
@@ -24,11 +24,11 @@ def add_prl_soc_constraints(model):
 
     def soc_prl_discharge_buffer(model, t):
         iv = model.time_to_interval[t]
-        return model.v_BAT_SOC[t]   >=(0.42 * (model.v_PRL_POWER[iv]/INITIAL_BATTERY_CAPACITY)  * model.v_MODE_PRL[iv]) / EFFICIENCY
+        return model.v_BAT_SOC[t]   >=0.42 * model.v_PRL_POWER[iv] / (INITIAL_BATTERY_CAPACITY * EFFICIENCY)
 
     def soc_prl_charge_buffer(model, t):
         iv = model.time_to_interval[t]
-        return  model.v_BAT_SOC[t]  <= ((1 - 0.42 * (model.v_PRL_POWER[iv]/INITIAL_BATTERY_CAPACITY))  * model.v_MODE_PRL[iv] + (1 - model.v_MODE_PRL[iv])) * EFFICIENCY
+        return  model.v_BAT_SOC[t]  <= 1 - (0.42 * model.v_PRL_POWER[iv] * EFFICIENCY / INITIAL_BATTERY_CAPACITY)
 
     model.soc_prl_discharge_buffer = pyo.Constraint(model.T, rule=soc_prl_discharge_buffer)
     model.soc_prl_charge_buffer    = pyo.Constraint(model.T, rule=soc_prl_charge_buffer)
