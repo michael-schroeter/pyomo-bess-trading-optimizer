@@ -26,4 +26,4 @@ def define_params(model: pyo.ConcreteModel, df_data_period, initial_battery_capa
 
     model.p_OPEX = pyo.Param(initialize=calculate_opex())
 
-    model.p_INITIAL_BATTERY_CAPACITY_YEAR = pyo.Param(initialize=initial_battery_capacity_for_year)
+    model.p_INITIAL_BATTERY_CAPACITY_YEAR = pyo.Param(initialize=initial_battery_capacity_for_year) # kommt aus der main und ergibt sich aus der End Batterie-Kapazität des Vorjahres

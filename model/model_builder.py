@@ -23,7 +23,7 @@ def setup_model(df_data_period, initial_battery_capacity_for_year):
     model.T = pyo.Set(initialize=time_points, ordered=True)
     unique_intervals = sorted({(t.date(), t.hour // 4) for t in time_points})
     model.D4 = pyo.Set(initialize=unique_intervals, ordered=True)
-    model.time_to_interval = {t: (t.date(), t.hour // 4) for t in time_points}
+    model.time_to_interval = {t: (t.date(), t.hour // 4) for t in time_points} # ordnet jeden 15-Minuten-Zeitschritt einem 4-Stunden-Intervall zu
     
     define_params(model, df_data_period, initial_battery_capacity_for_year)
     define_variables(model)

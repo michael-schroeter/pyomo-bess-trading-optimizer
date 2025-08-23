@@ -2,7 +2,7 @@ import pandas as pd
 from config import (
     PATH_SRL_WORK_DATA,
 )
-from params.params import (
+from params.scenario_config1 import (
     PROFIT_FACTOR_SRL_POS,
     PROFIT_FACTOR_SRL_NEG,
 )

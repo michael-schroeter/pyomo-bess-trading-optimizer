@@ -1,4 +1,4 @@
-from params.params import (
+from params.scenario_config1 import (
     INITIAL_BATTERY_CAPACITY, 
     LIFETIME_CYCLES,
     SYSTEM_POWER,

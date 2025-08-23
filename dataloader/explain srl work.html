@@ -1,0 +1,22 @@
+netztransparenz affr setpoint (sollwert sekündlich):
+ raw: 
+  - csv für 2022, 2023, 2024, 2025
+  - sekündliche srl sollwerte in MW index=time, 'setpoint' = pos/neg Zahl
+
+ process: 
+  - negativer setpoint in Spalte 'srl_negative', positiver setpoint in Spalte 'srl_positive' (negativer Wert wie viel Leistung im negativen Markt, positiver Wert wie viel Leistung im positiven Markt)
+  - 4s Durchschnittswert
+
+
+entsoe affr cbmp (Arbeitspreis 4s):
+ raw: 
+  - xml für jeden Tag 27.07.2022 - 26.07.2025 - hälfte verloren gegangen
+  - index = id(int), 'position' = zahl, 'Price [EUR/MWh] Up', Price [EUR/MWh] Down
+
+process:
+  - pkl für jeden Tag einzeln, pkl alle zusammen (27.07.2022 - 26.07.2025)
+
+
+
+setpoint-cbmp kombinieren:
+ - wurde nichts gemacht. in load_srl_work_data werden nur die cbmp betrachtet

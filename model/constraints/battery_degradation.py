@@ -1,6 +1,6 @@
 import pyomo.environ as pyo
 
-from params.params import DEGRADATION_FACTOR_MWH
+from params.scenario_config1 import DEGRADATION_FACTOR_MWH
 
 
 

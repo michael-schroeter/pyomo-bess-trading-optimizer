@@ -1,6 +1,6 @@
 import pyomo.environ as pyo
 
-from params.params import INITIAL_BATTERY_CAPACITY
+from params.scenario_config1 import INITIAL_BATTERY_CAPACITY
 from cost_calculator import calculate_capex, calculate_opex, calculate_depreciation_amount
 
 def define_additional_sums_expr(model):
