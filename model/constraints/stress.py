@@ -1,7 +1,50 @@
 import pyomo.environ as pyo
-
+from model.utils import get_global_bounds
 
 def add_stress_constraint(model):
+
+    stress_soc_breakpoints = [0, 0.5, 0.8, 1.1, 1.4, 1.7, 2.0]
+
+    # Bounds korrekt aus indizierten Variablen holen
+    xL_glob, xU_glob = get_global_bounds(model.v_SOC_STRESS_FACTOR, model.T)
+    yL,      yU      = get_global_bounds(model.v_POWER_STRESS_FACTOR, model.T)
+
+    M = (xU_glob - xL_glob) * (yU - yL)
+
+    S = range(len(stress_soc_breakpoints) - 1)
+    model.SOC_SEG = pyo.Set(initialize=S)
+
+    model.b_soc = pyo.Var(model.T, model.SOC_SEG, within=pyo.Binary)
+    model.one_soc_seg = pyo.Constraint(model.T,
+        rule=lambda m,t: sum(m.b_soc[t,s] for s in m.SOC_SEG) == 1)
+
+    model.x_lb_soc = pyo.Constraint(model.T, rule=lambda m,t:
+        m.v_SOC_STRESS_FACTOR[t] >= sum(stress_soc_breakpoints[s]   * m.b_soc[t,s] for s in m.SOC_SEG))
+    model.x_ub_soc = pyo.Constraint(model.T, rule=lambda m,t:
+        m.v_SOC_STRESS_FACTOR[t] <= sum(stress_soc_breakpoints[s+1] * m.b_soc[t,s] for s in m.SOC_SEG))
+
+    def mc1_rule(m,t,s):
+        xl = stress_soc_breakpoints[s]
+        return m.v_STRESS[t] >= xl*m.v_POWER_STRESS_FACTOR[t] + yL*m.v_SOC_STRESS_FACTOR[t] - xl*yL - M*(1 - m.b_soc[t,s])
+    def mc2_rule(m,t,s):
+        xu = stress_soc_breakpoints[s+1]
+        return m.v_STRESS[t] >= xu*m.v_POWER_STRESS_FACTOR[t] + yU*m.v_SOC_STRESS_FACTOR[t] - xu*yU - M*(1 - m.b_soc[t,s])
+    def mc3_rule(m,t,s):
+        xu = stress_soc_breakpoints[s+1]
+        return m.v_STRESS[t] <= xu*m.v_POWER_STRESS_FACTOR[t] + yL*m.v_SOC_STRESS_FACTOR[t] - xu*yL + M*(1 - m.b_soc[t,s])
+    def mc4_rule(m,t,s):
+        xl = stress_soc_breakpoints[s]
+        return m.v_STRESS[t] <= xl*m.v_POWER_STRESS_FACTOR[t] + yU*m.v_SOC_STRESS_FACTOR[t] - xl*yU + M*(1 - m.b_soc[t,s])
+
+    model.mc1_soc = pyo.Constraint(model.T, model.SOC_SEG, rule=mc1_rule)
+    model.mc2_soc = pyo.Constraint(model.T, model.SOC_SEG, rule=mc2_rule)
+    model.mc3_soc = pyo.Constraint(model.T, model.SOC_SEG, rule=mc3_rule)
+    model.mc4_soc = pyo.Constraint(model.T, model.SOC_SEG, rule=mc4_rule)
+
+    return model
+
+
+def xxxadd_stress_constraint(model):
 
     soc_breakpoints = [0.5, 0.8, 1.1, 1.4, 1.7, 2.0]
     power_breakpoints = [0.8, 1.2, 1.6, 2.0, 2.5, 3.0]
@@ -33,15 +76,20 @@ def add_soc_stress_factor_constraint(model):
     model.c_soc_stress_factor = pyo.Constraint(model.I_SOC_TANGENTS, model.T, rule=soc_stress_factor_rule)
 
 
-def add_power_stress_factor_constraint(model, tangents_as_tuples_power):
+def add_power_stress_factor_constraint(model):
+    tangents_as_tuples_power = [(0, 1)] 
     model.I_POWER_TANGENTS = pyo.RangeSet(0, len(tangents_as_tuples_power) - 1)
+
     def power_stress_factor_rule(m, i, t):
         tangent = tangents_as_tuples_power[i]
         mi = tangent[0]
         ni = tangent[1]
 
-        throughput = m.e_TOTAL_CHARGE[t] + m.e_TOTAL_DISCHARGE[t] # als c rate
-        return m.v_POWER_STRESS_FACTOR[t] >= mi * throughput + ni
+        throughput_per_15min = m.e_TOTAL_CHARGE[t] + m.e_TOTAL_DISCHARGE[t] #als c rate
+        p = throughput_per_15min * 60/15 # 60min/15min
+        c_rate = p /m.p_INITIAL_BATTERY_CAPACITY_YEAR
+
+        return m.v_POWER_STRESS_FACTOR[t] >= mi * c_rate + ni
     model.c_power_stress_factor = pyo.Constraint(model.I_POWER_TANGENTS, model.T, rule=power_stress_factor_rule)
 
 """

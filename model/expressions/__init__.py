@@ -5,6 +5,7 @@ from .tax import define_tax_expr
 from .additional_calculations import define_additional_sums_expr
 from .prl_mapping import prl_mapping_expr
 from .srl_mapping import srl_mapping_expr
+from .soc import define_soc_expr
 
 def define_all_expressions(model):
     prl_mapping_expr(model)
@@ -14,3 +15,4 @@ def define_all_expressions(model):
     define_revenue_expr(model)
     define_tax_expr(model)
     define_additional_sums_expr(model)
+    define_soc_expr(model)

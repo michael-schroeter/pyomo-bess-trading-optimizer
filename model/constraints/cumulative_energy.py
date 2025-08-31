@@ -2,14 +2,14 @@ import pyomo.environ as pyo
 
 
 
-def add_cumulative_soc_constraints(model):
-    def cumulative_soc_rule(model, t):
+def add_cumulative_stored_energy_constraints(model):
+    def cumulative_stored_energy_rule(model, t):
         if t == min(model.T):
             return model.v_STORED_ENERGY[t] == (model.e_TOTAL_CHARGE[t] - model.e_TOTAL_DISCHARGE[t])
         else:
             prev_t = model.T.prev(t)  
             return model.v_STORED_ENERGY[t] == model.v_STORED_ENERGY[prev_t] + (model.e_TOTAL_CHARGE[t] - model.e_TOTAL_DISCHARGE[t])
-    model.c_CUMULATIVE_SOC = pyo.Constraint(model.T, rule=cumulative_soc_rule)
+    model.c_CUMULATIVE_SOC = pyo.Constraint(model.T, rule=cumulative_stored_energy_rule)
 
     def energy_upper_bound_rule(m, t):
         return m.v_STORED_ENERGY[t] <= m.v_BATTERY_CAPACITY[t]
