@@ -15,7 +15,7 @@ def add_model_timeseries_results_to_df(template_df, models_by_year):
         CC.PRL_POWER:       lambda m, t: m.e_PRL_POWER[t],
         CC.SRL_POWER_NEG:   lambda m, t: m.e_SRL_POWER_NEG[t],
         CC.SRL_POWER_POS:   lambda m, t: m.e_SRL_POWER_POS[t],
-        CC.BAT_SOC:         lambda m, t: m.v_BAT_SOC[t],
+        #CC.BAT_SOC:         lambda m, t: m.v_BAT_SOC[t],
         CC.MARKET_CHARGE:    lambda m, t: m.e_MARKET_CHARGE[t],
         CC.MARKET_DISCHARGE: lambda m, t: m.e_MARKET_DISCHARGE[t],
         CC.PRL_CHARGE:     lambda m, t: m.e_PRL_CHARGE[t],
@@ -70,7 +70,7 @@ def add_model_atrs_results_to_df(models_by_year):
         CC.SRL_POS_DISCHARGE_SUM: lambda m: pyo.value(m.e_SRL_POS_DISCHARGE_SUM),
         CC.TOTAL_CHARGE_SUM: lambda m: pyo.value(m.e_TOTAL_CHARGE_SUM),
         CC.TOTAL_DISCHARGE_SUM: lambda m: pyo.value(m.e_TOTAL_DISCHARGE_SUM),
-        CC.BATTERY_CYCLES: lambda m: pyo.value(m.e_BATTERY_CYCLES),
+        #CC.BATTERY_CYCLES: lambda m: pyo.value(m.e_BATTERY_CYCLES),
         
 
     }

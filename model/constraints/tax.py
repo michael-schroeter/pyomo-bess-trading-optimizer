@@ -6,5 +6,5 @@ def add_tax_constraints(model):
     depreciation = calculate_depreciation_amount()
     opex = calculate_opex()
     revenue = model.e_TOTAL_REVENUE_SUM
-    model.c_TAX1 = pyo.Constraint(expr = model.v_TAX_BASE >= revenue - depreciation - opex)
+    model.c_TAX1 = pyo.Constraint(expr = model.v_TAX_BASE >= revenue - depreciation/12 - opex/12)
     model.c_TAX2 = pyo.Constraint(expr = model.v_TAX_BASE >= 0)

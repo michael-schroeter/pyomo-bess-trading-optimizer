@@ -1,5 +1,5 @@
 import pyomo.environ as pyo
-from params.scenario_config1 import SYSTEM_POWER, INITIAL_BATTERY_CAPACITY, EFFICIENCY
+from params.scenario_config1 import SYSTEM_POWER, EFFICIENCY
 
 
 def add_srl_mode_constraints(model):
@@ -53,7 +53,7 @@ def add_srl_mode_constraints(model):
 
 
     
-def add_srl_soc_constraints(model):
+def add_srl_energy_constraints(model):
     """
     Fügt die SOC-Constraints hinzu. Die Bedingung für ein 4h-Intervall
     basiert auf dem SOC des 15-Minuten-Zeitschritts davor.
@@ -64,29 +64,19 @@ def add_srl_soc_constraints(model):
         for iv in model.D4
     }
 
-    def soc_pos_rule(m, d, q): # srl_pos -> entladen
+    def energy_srl_pos_rule(m, d, q):
         iv = (d, q)
         start_t = m.interval_to_start_time[iv]
+        relevant_t = start_t if start_t == m.T.first() else m.T.prev(start_t)
+        required_energy = m.v_SRL_POWER_POS[iv] / EFFICIENCY
+        return m.v_STORED_ENERGY[relevant_t] >= required_energy
+    model.c_SRL_energy_pos = pyo.Constraint(model.D4, rule=energy_srl_pos_rule)
 
-        if start_t == m.T.first():
-            relevant_t = start_t
-        else:
-            relevant_t = m.T.prev(start_t)
-            
-        return m.v_BAT_SOC[relevant_t]  >= m.v_SRL_POWER_POS[iv] / (INITIAL_BATTERY_CAPACITY * EFFICIENCY) * 1 # 1MWh pro
-    
-    model.c_SRL_SOC_POS = pyo.Constraint(model.D4, rule=soc_pos_rule)
-
-    def soc_neg_rule(m, d, q):
+    def energy_srl_neg_rule(m, d, q):
         iv = (d, q)
         start_t = m.interval_to_start_time[iv]
-        
-        if start_t == m.T.first():
-            relevant_t = start_t
-        else:
-            relevant_t = m.T.prev(start_t)
-            
-        return m.v_BAT_SOC[relevant_t] <= 1 - (m.v_SRL_POWER_NEG[iv] * EFFICIENCY / INITIAL_BATTERY_CAPACITY)
-        
-    model.c_SRL_SOC_NEG = pyo.Constraint(model.D4, rule=soc_neg_rule)
-
+        relevant_t = start_t if start_t == m.T.first() else m.T.prev(start_t) 
+        required_headroom = m.v_SRL_POWER_NEG[iv] * EFFICIENCY 
+        return m.v_STORED_ENERGY[relevant_t] <= m.v_BATTERY_CAPACITY[relevant_t] - required_headroom
+       
+    model.c_SRL_energy_neg = pyo.Constraint(model.D4, rule=energy_srl_neg_rule)

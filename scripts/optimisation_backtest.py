@@ -19,31 +19,40 @@ from utils import get_params_as_dataframe
 from cost_calculator import calculate_specific_aging_cost
 
 
-def main_optimisation(df_data_period, initial_battery_capacity_for_year):
-    model = setup_model(df_data_period, initial_battery_capacity_for_year)
+def main_optimisation(df_data_period, initial_battery_capacity_for_year, initial_cycles, initial_cycles_eq):
+    model = setup_model(df_data_period, initial_battery_capacity_for_year, initial_cycles, initial_cycles_eq)
     solve_model(model)
     print(f" profit: {pyo.value(model.OBJ)}")
     return model
 
 # wir starten im 1. Jahr mit dem Anfangs-Batterie-Kapazität aus config. 
 # Dann wird am Ende der Optimierung die neue Batterie-Kapazität gespeichert und als Startwert für das nächste Jahr verwendet.
-# Wie Berechnet sich die neue Batterie-Kapazität? Wird innerhalb eines Jahres eine konstante Batterie Kapazität angenommen? 
+# Genauso mit Cyclen_sum
 def build_models_by_year(df_data: pd.DataFrame) -> Dict[int, object]:
     current_start_battery_capacity = INITIAL_BATTERY_CAPACITY
+    current_start_cycles = 0
+    current_start_cycles_eq = 0
     models_by_year = {}
-    for year_timestamp, df_data_year in df_data.groupby(pd.Grouper(freq='YE')):
+    for year_timestamp, df_data_year in df_data.groupby(pd.Grouper(freq='ME')):
         if df_data_year.empty:
             continue
 
-        year = year_timestamp.year
-        print(f"Baue Modell für Jahr {year} ({df_data_year.index[0].date()} bis {df_data_year.index[-1].date()})")
+        key = (year_timestamp.year, year_timestamp.month)
+        print(f"Baue Modell für Jahr {key} ({df_data_year.index[0].date()} bis {df_data_year.index[-1].date()})")
         #measure
         start_time = time.time()
-        model_year = main_optimisation(df_data_year, current_start_battery_capacity)
-        print(f"{year}:  {time.time() - start_time:.2f} Sekunden")
-        models_by_year[year] = model_year
+        model_year = main_optimisation(df_data_year, current_start_battery_capacity, current_start_cycles, current_start_cycles_eq)
+        print(f"{key}:  {time.time() - start_time:.2f} Sekunden")
+        models_by_year[key] = model_year
+        
         final_battery_capacity_of_year = pyo.value(model_year.v_BATTERY_CAPACITY[model_year.T.last()])
         current_start_battery_capacity = final_battery_capacity_of_year
+
+        #final_cycles_of_year = pyo.value(model_year.v_CYCLES_CUMSUM[model_year.T.last()])
+        #current_start_cycles = final_cycles_of_year
+        
+        final_cycles_eq_of_year = pyo.value(model_year.v_CYCLES_EQ_CUMSUM[model_year.T.last()])
+        current_start_cycles_eq = final_cycles_eq_of_year
 
     return models_by_year
 

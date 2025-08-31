@@ -17,7 +17,7 @@ def solve_model(model):
 
 
 
-def setup_model(df_data_period, initial_battery_capacity_for_year):
+def setup_model(df_data_period, initial_battery_capacity_for_year, initial_cycles, initial_cycles_eq):
     time_points = df_data_period.index.tolist()	
     model = pyo.ConcreteModel()
     model.T = pyo.Set(initialize=time_points, ordered=True)
@@ -25,7 +25,7 @@ def setup_model(df_data_period, initial_battery_capacity_for_year):
     model.D4 = pyo.Set(initialize=unique_intervals, ordered=True)
     model.time_to_interval = {t: (t.date(), t.hour // 4) for t in time_points} # ordnet jeden 15-Minuten-Zeitschritt einem 4-Stunden-Intervall zu
     
-    define_params(model, df_data_period, initial_battery_capacity_for_year)
+    define_params(model, df_data_period, initial_battery_capacity_for_year, initial_cycles, initial_cycles_eq)
     define_variables(model)
     define_all_expressions(model)
     add_all_constraints(model, time_points)

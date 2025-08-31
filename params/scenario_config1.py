@@ -4,7 +4,7 @@ TITLE = "ESN-Storage LFP CON 5000 (Daten von Torsten Reusch)"
 
 #Data Config
 START_DATE = "2023-06-26" #included
-END_DATE = "2023-06-28" #excluded
+END_DATE = "2024-06-27" #excluded
 
 ##Battery Hardware
 INITIAL_BATTERY_CAPACITY = 5.016 * 0.95  #MWh
