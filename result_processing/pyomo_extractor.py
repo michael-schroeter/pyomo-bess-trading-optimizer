@@ -15,7 +15,7 @@ def add_model_timeseries_results_to_df(template_df, models_by_year):
         CC.PRL_POWER:       lambda m, t: m.e_PRL_POWER[t],
         CC.SRL_POWER_NEG:   lambda m, t: m.e_SRL_POWER_NEG[t],
         CC.SRL_POWER_POS:   lambda m, t: m.e_SRL_POWER_POS[t],
-        #CC.BAT_SOC:         lambda m, t: m.v_BAT_SOC[t],
+        CC.BAT_SOC:         lambda m, t: m.e_APPROX_SOC[t],
         CC.MARKET_CHARGE:    lambda m, t: m.e_MARKET_CHARGE[t],
         CC.MARKET_DISCHARGE: lambda m, t: m.e_MARKET_DISCHARGE[t],
         CC.PRL_CHARGE:     lambda m, t: m.e_PRL_CHARGE[t],
@@ -29,6 +29,13 @@ def add_model_timeseries_results_to_df(template_df, models_by_year):
         CC.REVENUE_SRL:     lambda m, t: m.e_REVENUE_SRL[t],
         CC.REVENUE_TOTAL:   lambda m, t: m.e_TOTAL_REVENUE[t],
         CC.AGING_COST:      lambda m, t: m.e_AGING_COST[t],
+        'Cycles':           lambda m, t: m.v_CYCLES[t],
+        'Cycles_EQ':        lambda m, t: m.v_CYCLES_EQ[t],
+        'Cycles_CumSum':    lambda m, t: m.v_CYCLES_CUMSUM[t],
+        'Cycles_EQ_CumSum': lambda m, t: m.v_CYCLES_EQ_CUMSUM[t],
+        'SOC_Stress_Factor':    lambda m, t: m.v_SOC_STRESS_FACTOR[t],
+        'Power_Stress_Factor':  lambda m, t: m.v_POWER_STRESS_FACTOR[t],
+        'Stress':           lambda m, t: m.v_STRESS[t],
         'BATTERY_CAPACITY': lambda m, t: m.v_BATTERY_CAPACITY[t],
     }
 

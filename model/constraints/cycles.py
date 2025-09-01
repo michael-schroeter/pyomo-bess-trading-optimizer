@@ -21,47 +21,89 @@ def add_cycles_real_constraints(model):
 # - y := v_STRESS bleibt kontinuierlich (nutzt nur Bounds)
 # - ersetzt den unzulässigen 2D-Piecewise-Aufruf 1:1 im Funktionsrahmen
 
+import pyomo.environ as pyo
+from model.utils import get_global_bounds
+
 def add_cycles_eq_piecewise_constraints(model):
 
-    cyc_breakpoints = [0, 0.025, 0.05, 0.075, 0.1, 0.125, 0.15, 0.175, 0.2, 0.225, 0.25]
+    # ---- 1) Breakpoints ----
+    cyc_breakpoints    = [0, 0.025, 0.05, 0.075, 0.1, 0.125, 0.15, 0.175, 0.2, 0.225, 0.25]  
+    stress_breakpoints = [0.0, 1.0, 2.0, 3.0, 4.0]   # 4 Segmente für STRESS
 
-    # Bounds korrekt aus indizierten Variablen holen
+    # ---- 2) Globale Bounds holen ----
     xL_glob, xU_glob = get_global_bounds(model.v_CYCLES, model.T)
-    yL,      yU      = get_global_bounds(model.v_STRESS, model.T)
+    yL_glob, yU_glob = get_global_bounds(model.v_STRESS, model.T)
+    zL_glob, zU_glob = 0.0, xU_glob * yU_glob   # falls passend
 
-    M = (xU_glob - xL_glob) * (yU - yL)  # konservativ
+    # Konsistenzcheck: Breakpoints müssen die globalen Bounds überdecken
+    assert cyc_breakpoints[0]    <= xL_glob + 1e-9 and cyc_breakpoints[-1]    >= xU_glob - 1e-9, \
+        "x-Bounds liegen außerhalb der Breakpoints"
+    assert stress_breakpoints[0] <= yL_glob + 1e-9 and stress_breakpoints[-1] >= yU_glob - 1e-9, \
+        "y-Bounds liegen außerhalb der Breakpoints"
 
-    S = range(len(cyc_breakpoints) - 1)
-    model.CYC_SEG = pyo.Set(initialize=S)
+    # ---- 3) Indexmengen ----
+    I = range(len(cyc_breakpoints) - 1)      # x-Segmente
+    J = range(len(stress_breakpoints) - 1)   # y-Segmente
+    model.CYC_SEG    = pyo.Set(initialize=I)
+    model.STRESS_SEG = pyo.Set(initialize=J)
 
-    model.b_cyc = pyo.Var(model.T, model.CYC_SEG, within=pyo.Binary)
-    model.one_seg_cyc = pyo.Constraint(model.T,
-        rule=lambda m,t: sum(m.b_cyc[t,s] for s in m.CYC_SEG) == 1)
+    # ---- 4) Binärvariablen für Kacheln ----
+    model.b_cell = pyo.Var(model.T, model.CYC_SEG, model.STRESS_SEG, within=pyo.Binary)
 
-    # x in aktivem Segment
-    model.x_lb_cyc = pyo.Constraint(model.T, rule=lambda m,t:
-        m.v_CYCLES[t] >= sum(cyc_breakpoints[s]   * m.b_cyc[t,s] for s in m.CYC_SEG))
-    model.x_ub_cyc = pyo.Constraint(model.T, rule=lambda m,t:
-        m.v_CYCLES[t] <= sum(cyc_breakpoints[s+1] * m.b_cyc[t,s] for s in m.CYC_SEG))
+    # pro t genau eine aktive Kachel
+    def one_cell_rule(m, t):
+        return sum(m.b_cell[t,i,j] for i in m.CYC_SEG for j in m.STRESS_SEG) == 1
+    model.one_cell = pyo.Constraint(model.T, rule=one_cell_rule)
 
-    # McCormick je Segment (indikativ via (1 - b))
-    def mc1_rule(m,t,s):
-        xl = cyc_breakpoints[s]
-        return m.v_CYCLES_EQ[t] >= xl*m.v_STRESS[t] + yL*m.v_CYCLES[t] - xl*yL - M*(1 - m.b_cyc[t,s])
-    def mc2_rule(m,t,s):
-        xu = cyc_breakpoints[s+1]
-        return m.v_CYCLES_EQ[t] >= xu*m.v_STRESS[t] + yU*m.v_CYCLES[t] - xu*yU - M*(1 - m.b_cyc[t,s])
-    def mc3_rule(m,t,s):
-        xu = cyc_breakpoints[s+1]
-        return m.v_CYCLES_EQ[t] <= xu*m.v_STRESS[t] + yL*m.v_CYCLES[t] - xu*yL + M*(1 - m.b_cyc[t,s])
-    def mc4_rule(m,t,s):
-        xl = cyc_breakpoints[s]
-        return m.v_CYCLES_EQ[t] <= xl*m.v_STRESS[t] + yU*m.v_CYCLES[t] - xl*yU + M*(1 - m.b_cyc[t,s])
+    # ---- 5) x,y in aktiver Kachel einsperren ----
+    def x_lb_rule(m, t):
+        return m.v_CYCLES[t] >= sum(cyc_breakpoints[i]   * m.b_cell[t,i,j]
+                                    for i in m.CYC_SEG for j in m.STRESS_SEG)
+    def x_ub_rule(m, t):
+        return m.v_CYCLES[t] <= sum(cyc_breakpoints[i+1] * m.b_cell[t,i,j]
+                                    for i in m.CYC_SEG for j in m.STRESS_SEG)
+    def y_lb_rule(m, t):
+        return m.v_STRESS[t] >= sum(stress_breakpoints[j]   * m.b_cell[t,i,j]
+                                    for i in m.CYC_SEG for j in m.STRESS_SEG)
+    def y_ub_rule(m, t):
+        return m.v_STRESS[t] <= sum(stress_breakpoints[j+1] * m.b_cell[t,i,j]
+                                    for i in m.CYC_SEG for j in m.STRESS_SEG)
 
-    model.mc1_cyc = pyo.Constraint(model.T, model.CYC_SEG, rule=mc1_rule)
-    model.mc2_cyc = pyo.Constraint(model.T, model.CYC_SEG, rule=mc2_rule)
-    model.mc3_cyc = pyo.Constraint(model.T, model.CYC_SEG, rule=mc3_rule)
-    model.mc4_cyc = pyo.Constraint(model.T, model.CYC_SEG, rule=mc4_rule)
+    model.x_in_cell_lb = pyo.Constraint(model.T, rule=x_lb_rule)
+    model.x_in_cell_ub = pyo.Constraint(model.T, rule=x_ub_rule)
+    model.y_in_cell_lb = pyo.Constraint(model.T, rule=y_lb_rule)
+    model.y_in_cell_ub = pyo.Constraint(model.T, rule=y_ub_rule)
+
+    # ---- 6) McCormick je Kachel ----
+    def mc1_rule(m, t, i, j):
+        xL = cyc_breakpoints[i]     ; xU = cyc_breakpoints[i+1]
+        yL = stress_breakpoints[j]  ; yU = stress_breakpoints[j+1]
+        M = (xU_glob - xL_glob)*yU_glob + (yU_glob - yL_glob)*xU_glob + abs(xU_glob*yU_glob) + 1.0
+
+        return m.v_CYCLES_EQ[t] >= xL*m.v_STRESS[t] + yL*m.v_CYCLES[t] - xL*yL - M*(1 - m.b_cell[t,i,j])
+
+    def mc2_rule(m, t, i, j):
+        xL = cyc_breakpoints[i]     ; xU = cyc_breakpoints[i+1]
+        yL = stress_breakpoints[j]  ; yU = stress_breakpoints[j+1]
+        M = (xU_glob - xL_glob)*yU_glob + (yU_glob - yL_glob)*xU_glob + abs(xU_glob*yU_glob) + 1.0
+        return m.v_CYCLES_EQ[t] >= xU*m.v_STRESS[t] + yU*m.v_CYCLES[t] - xU*yU - M*(1 - m.b_cell[t,i,j])
+
+    def mc3_rule(m, t, i, j):
+        xL = cyc_breakpoints[i]     ; xU = cyc_breakpoints[i+1]
+        yL = stress_breakpoints[j]  ; yU = stress_breakpoints[j+1]
+        M = (xU_glob - xL_glob)*yU_glob + (yU_glob - yL_glob)*xU_glob + abs(xU_glob*yU_glob) + 1.0
+        return m.v_CYCLES_EQ[t] <= xU*m.v_STRESS[t] + yL*m.v_CYCLES[t] - xU*yL + M*(1 - m.b_cell[t,i,j])
+
+    def mc4_rule(m, t, i, j):
+        xL = cyc_breakpoints[i]     ; xU = cyc_breakpoints[i+1]
+        yL = stress_breakpoints[j]  ; yU = stress_breakpoints[j+1]
+        M = (xU_glob - xL_glob)*yU_glob + (yU_glob - yL_glob)*xU_glob + abs(xU_glob*yU_glob) + 1.0
+        return m.v_CYCLES_EQ[t] <= xL*m.v_STRESS[t] + yU*m.v_CYCLES[t] - xL*yU + M*(1 - m.b_cell[t,i,j])
+
+    model.mc1 = pyo.Constraint(model.T, model.CYC_SEG, model.STRESS_SEG, rule=mc1_rule)
+    model.mc2 = pyo.Constraint(model.T, model.CYC_SEG, model.STRESS_SEG, rule=mc2_rule)
+    model.mc3 = pyo.Constraint(model.T, model.CYC_SEG, model.STRESS_SEG, rule=mc3_rule)
+    model.mc4 = pyo.Constraint(model.T, model.CYC_SEG, model.STRESS_SEG, rule=mc4_rule)
 
     return model
 

@@ -26,9 +26,9 @@ def define_variables(model):
     model.v_CYCLES_EQ_CUMSUM = pyo.Var(model.T, domain=pyo.NonNegativeReals, bounds=(0, LIFETIME_CYCLES * 1.5))
 
     # Stress
-    model.v_SOC_STRESS_FACTOR = pyo.Var(model.T, domain=pyo.NonNegativeReals, bounds=(0, 4 *10))
-    model.v_POWER_STRESS_FACTOR = pyo.Var(model.T, domain=pyo.NonNegativeReals, bounds=(0.2, 4*10))
-    model.v_STRESS = pyo.Var(model.T, domain=pyo.NonNegativeReals, bounds=(0, 4*10 ))
+    model.v_SOC_STRESS_FACTOR = pyo.Var(model.T, domain=pyo.NonNegativeReals, bounds=(0, 2))
+    model.v_POWER_STRESS_FACTOR = pyo.Var(model.T, domain=pyo.NonNegativeReals, bounds=(0, 2))
+    model.v_STRESS = pyo.Var(model.T, domain=pyo.NonNegativeReals, bounds=(0, 4))
 
     # Degradation
     model.v_DEGRADATION = pyo.Var(model.T, domain=pyo.NonNegativeReals, bounds=(0, 0.2 *10))
