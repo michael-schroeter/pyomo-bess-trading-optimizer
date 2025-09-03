@@ -4,8 +4,9 @@ from .srl import add_srl_energy_constraints
 from .cumulative_energy import add_cumulative_stored_energy_constraints
 from .tax import add_tax_constraints
 from .battery_degradation import add_battery_degradation_constraints
-from .cycles import add_cycles_real_constraints, add_cycles_eq_piecewise_constraints
-from .stress import add_stress_constraint, add_soc_stress_factor_constraint, add_power_stress_factor_constraint
+from .cycles import add_cycles_real_constraints
+from .cycles_eq import add_cycles_eq_constraints
+from .efficiency_degradation import add_efficiency_degradation_constraints
 
 
 def add_all_constraints(model, time_points):
@@ -15,11 +16,9 @@ def add_all_constraints(model, time_points):
     add_tax_constraints(model)
     add_cumulative_stored_energy_constraints(model)
     add_cycles_real_constraints(model)
-    add_cycles_eq_piecewise_constraints(model)
-    add_soc_stress_factor_constraint(model)
-    add_power_stress_factor_constraint(model)
-    add_stress_constraint(model)
+    add_cycles_eq_constraints(model)
     add_battery_degradation_constraints(model)
+    add_efficiency_degradation_constraints(model)
     return model
 
 

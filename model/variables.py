@@ -25,13 +25,11 @@ def define_variables(model):
     model.v_CYCLES_CUMSUM = pyo.Var(model.T, domain=pyo.NonNegativeReals, bounds=(0, LIFETIME_CYCLES * 1.5))
     model.v_CYCLES_EQ_CUMSUM = pyo.Var(model.T, domain=pyo.NonNegativeReals, bounds=(0, LIFETIME_CYCLES * 1.5))
 
-    # Stress
-    model.v_SOC_STRESS_FACTOR = pyo.Var(model.T, domain=pyo.NonNegativeReals, bounds=(0, 2))
-    model.v_POWER_STRESS_FACTOR = pyo.Var(model.T, domain=pyo.NonNegativeReals, bounds=(0, 2))
-    model.v_STRESS = pyo.Var(model.T, domain=pyo.NonNegativeReals, bounds=(0, 4))
-
     # Degradation
-    model.v_DEGRADATION = pyo.Var(model.T, domain=pyo.NonNegativeReals, bounds=(0, 0.2 *10))
-    model.v_BATTERY_CAPACITY = pyo.Var(model.T, within=pyo.NonNegativeReals, bounds=(0.8 * INITIAL_BATTERY_CAPACITY, INITIAL_BATTERY_CAPACITY)) 
+    model.v_REST_CAPACITY_CYCLE = pyo.Var(model.T, domain=pyo.NonNegativeReals, bounds=(0.7 * INITIAL_BATTERY_CAPACITY, INITIAL_BATTERY_CAPACITY))
+    model.v_BATTERY_CAPACITY = pyo.Var(model.T, within=pyo.NonNegativeReals, bounds=(0.7 * INITIAL_BATTERY_CAPACITY, INITIAL_BATTERY_CAPACITY)) 
+    model.v_X_BIN = pyo.Var(model.T, model.K, domain=pyo.NonNegativeReals)
+
+    model.v_EFFICIENCY = pyo.Var(model.T, within=pyo.NonNegativeReals, bounds=(0.7, 1.0))
 
     model.v_TAX_BASE  = pyo.Var(domain=pyo.NonNegativeReals, bounds=(0, 1e7))

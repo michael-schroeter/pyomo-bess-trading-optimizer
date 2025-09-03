@@ -33,10 +33,9 @@ def add_model_timeseries_results_to_df(template_df, models_by_year):
         'Cycles_EQ':        lambda m, t: m.v_CYCLES_EQ[t],
         'Cycles_CumSum':    lambda m, t: m.v_CYCLES_CUMSUM[t],
         'Cycles_EQ_CumSum': lambda m, t: m.v_CYCLES_EQ_CUMSUM[t],
-        'SOC_Stress_Factor':    lambda m, t: m.v_SOC_STRESS_FACTOR[t],
-        'Power_Stress_Factor':  lambda m, t: m.v_POWER_STRESS_FACTOR[t],
-        'Stress':           lambda m, t: m.v_STRESS[t],
+        'REST_CAPACITY_CYCLE':    lambda m, t: m.v_REST_CAPACITY_CYCLE[t],
         'BATTERY_CAPACITY': lambda m, t: m.v_BATTERY_CAPACITY[t],
+        'EFFICIENCY':       lambda m, t: m.v_EFFICIENCY[t],
     }
 
     model_results_timeseries = {}
@@ -49,7 +48,7 @@ def add_model_timeseries_results_to_df(template_df, models_by_year):
     return combined_df
 
 
-def add_model_atrs_results_to_df(models_by_year):
+def add_model_atrs_results_to_df(models):
     attrs = {
         #market/regelleistung
         CC.BUY_VOL_SUM: lambda m: pyo.value(sum(m.v_BUY_VOL[t] for t in m.T)),
@@ -77,13 +76,17 @@ def add_model_atrs_results_to_df(models_by_year):
         CC.SRL_POS_DISCHARGE_SUM: lambda m: pyo.value(m.e_SRL_POS_DISCHARGE_SUM),
         CC.TOTAL_CHARGE_SUM: lambda m: pyo.value(m.e_TOTAL_CHARGE_SUM),
         CC.TOTAL_DISCHARGE_SUM: lambda m: pyo.value(m.e_TOTAL_DISCHARGE_SUM),
-        #CC.BATTERY_CYCLES: lambda m: pyo.value(m.e_BATTERY_CYCLES),
+        # Cycles
+        CC.BATTERY_CYCLES: lambda m: pyo.value(sum(m.v_CYCLES[t] for t in m.T)),
+        'Cycles_eq': lambda m: pyo.value(sum(m.v_CYCLES_EQ[t] for t in m.T)),
+        
+
         
 
     }
 
     data = {}
-    for year, model in models_by_year.items():
+    for year, model in models.items():
         data[year] = {name: fn(model) for name, fn in attrs.items()}
 
     df_attrs = pd.DataFrame.from_dict(data, orient='index')

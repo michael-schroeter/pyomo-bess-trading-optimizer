@@ -3,14 +3,15 @@ from pathlib import Path
 TITLE = "ESN-Storage LFP CON 5000 (Daten von Torsten Reusch)"
 
 #Data Config
-START_DATE = "2023-07-01" #included
-END_DATE = "2023-07-02" #excluded
+START_DATE = "2023-07-28" #included
+END_DATE = "2023-08-03" #excluded
 
 ##Battery Hardware
 INITIAL_BATTERY_CAPACITY = 5.016 * 0.95  #MWh
 SYSTEM_POWER = 2.5 #MW (1MW = 1MWh/1h) # AC Seitig
 LIFETIME_CYCLES = 6000 # (95% DoD, 70% EOL)
-EFFICIENCY = 0.949 # einseitiger Wirkungsgrad (jeweils Lade- und Entladeverluste)
+EFFICIENCY_BAT = 0.949 # einseitiger Wirkungsgrad (jeweils Lade- und Entladeverluste)
+EFFICIENCY_REST = 0.97 # sonstige Wirkungsgrade (Umrichter, Transformator, Kabel, etc.)
 DEGRADATION_FACTOR_MWH = 0.000025  # MWh pro MWh durchlaufener Energie
 CHARGE_RATE = SYSTEM_POWER * (15/60) 
 
@@ -47,6 +48,12 @@ PROFIT_FACTOR_SRL_POS = 1.6 #Faktor für die positive Regelleistung
 MARKET_SWITCH = 1
 PRL_SWITCH = 1
 SRL_SWITCH = 1
+
+
+## Degradation
+DEGRADATION_CAL_VALUE = INITIAL_BATTERY_CAPACITY * 0.00002585 / 100 #pro 15min 
+EFFICIENCY_DEGRADATION_CAL_VALUE = 0.0005/100 * EFFICIENCY_BAT
+
 
 
 
