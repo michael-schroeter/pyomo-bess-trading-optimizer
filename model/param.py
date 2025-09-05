@@ -2,7 +2,7 @@ import pyomo.environ as pyo
 from typing import Mapping, Any
 from config_column_names import ColumnNamesClean as CC
 from cost_calculator import calculate_opex
-from params.scenario_config1 import DEGRADATION_CAL_VALUE, CHARGE_RATE, EFFICIENCY_DEGRADATION_CAL_VALUE
+from params.scenario_config1 import DEGRADATION_CAL_VALUE, MAX_CHARGE_RATE, EFFICIENCY_DEGRADATION_CAL_VALUE
 
 def define_params(model: pyo.ConcreteModel, df_data_period, initial_battery_capacity_for_year, initial_cycles, initial_cycles_eq, initial_efficiency) -> None:
     
@@ -33,11 +33,11 @@ def define_params(model: pyo.ConcreteModel, df_data_period, initial_battery_capa
     model.p_INITIAL_CYCLES_EQ = pyo.Param(initialize=initial_cycles_eq) 
 
     model.p_DEGRADATION_CAL = pyo.Param(initialize=DEGRADATION_CAL_VALUE)
-    model.p_MAX_THROUGHPUT = pyo.Param(initialize=CHARGE_RATE)
+    model.p_MAX_THROUGHPUT = pyo.Param(initialize=MAX_CHARGE_RATE)
 
     model.p_EFFICIENCY_DEG_CAL = pyo.Param(initialize=EFFICIENCY_DEGRADATION_CAL_VALUE)
 
     soc_factors = {0: 1.60, 1: 1.00, 2: 1.02, 3: 1.20} # Beispielwerte
-    model.p_DELTA = pyo.Param(model.K, initialize=soc_factors)
+    model.p_SOC_FACTORS = pyo.Param(model.K, initialize=soc_factors)
     
 

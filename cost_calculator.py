@@ -64,6 +64,7 @@ def calculate_specific_aging_cost():
 
 
 
+
 if __name__ == "__main__":
     print("CAPEX:", calculate_capex())
     print("OPEX:", calculate_opex())

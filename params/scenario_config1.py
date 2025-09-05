@@ -12,8 +12,11 @@ SYSTEM_POWER = 2.5 #MW (1MW = 1MWh/1h) # AC Seitig
 LIFETIME_CYCLES = 6000 # (95% DoD, 70% EOL)
 EFFICIENCY_BAT = 0.949 # einseitiger Wirkungsgrad (jeweils Lade- und Entladeverluste)
 EFFICIENCY_REST = 0.97 # sonstige Wirkungsgrade (Umrichter, Transformator, Kabel, etc.)
+EFFICIENCY_SYS = EFFICIENCY_BAT * EFFICIENCY_REST
 DEGRADATION_FACTOR_MWH = 0.000025  # MWh pro MWh durchlaufener Energie
-CHARGE_RATE = SYSTEM_POWER * (15/60) 
+MAX_CHARGE_RATE = SYSTEM_POWER * (15/60)  # Max MWH pro 15min
+MAX_CYCLE_RATE = MAX_CHARGE_RATE / (2 * INITIAL_BATTERY_CAPACITY)  #pro 15min
+
 
 
 ## Einmalige Investitionskosten (CAPEX)

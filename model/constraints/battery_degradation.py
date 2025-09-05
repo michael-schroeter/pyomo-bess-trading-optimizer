@@ -13,18 +13,10 @@ def add_battery_degradation_constraints(model):
         
 
     def degradation_function_rule(model, t, cycles):
-        # ax_^2 + bx + c
-        return INITIAL_BATTERY_CAPACITY * ((2.69 * math.exp(-0.0031 * cycles) + 17.56 * math.exp(-0.0001 * cycles) + 79.76) / 100)
+        return INITIAL_BATTERY_CAPACITY * (((2.6817*math.exp(-0.0031*cycles) + 17.5582*math.exp(-0.0001*cycles) +79.76)) / 100)
     
-    def xdegradation_function_rule(model, t, cycles):
-        # ax_^2 + bx + c
-        a = 0.2
-        b = -0.4
-        c = 1
-        x = cycles / LIFETIME_CYCLES
-        return INITIAL_BATTERY_CAPACITY * (a * x**2 + b * x + c)
     
-    cycle_breakpoints = np.linspace(0, LIFETIME_CYCLES*1.5, 11).tolist()
+    cycle_breakpoints = np.linspace(0, LIFETIME_CYCLES*2, 11).tolist()
     model.c_define_capacity = pyo.Piecewise(
         model.T, 
         model.v_REST_CAPACITY_CYCLE,            # y

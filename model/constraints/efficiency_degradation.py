@@ -9,7 +9,9 @@ def add_efficiency_degradation_constraints(model: pyo.ConcreteModel) -> None:
         n = EFFICIENCY_BAT
         v = -factor*EFFICIENCY_BAT
         efficiency_bat = v*m.v_CYCLES_CUMSUM[t] + n - m.p_EFFICIENCY_DEG_CAL
-        return m.v_EFFICIENCY[t] == efficiency_bat * EFFICIENCY_REST
+        return m.v_EFFICIENCY_SYS[t] == efficiency_bat * EFFICIENCY_REST
 
     
     model.efficiency_degradation_constraint = pyo.Constraint(model.T, rule=efficiency_degradation_rule)
+
+    return model

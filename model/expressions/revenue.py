@@ -29,6 +29,6 @@ def define_revenue_expr(model):
 
 
     def rev_total(model, t):
-        return  model.e_REVENUE_MARKET[t] + model.e_REVENUE_PRL[t] + model.e_REVENUE_SRL[t]
+        return  model.e_REVENUE_MARKET[t] + 0*model.e_REVENUE_PRL[t] + 0*model.e_REVENUE_SRL[t]
     model.e_TOTAL_REVENUE = pyo.Expression(model.T, rule=rev_total)
     model.e_TOTAL_REVENUE_SUM = pyo.Expression(expr=sum(model.e_TOTAL_REVENUE[t] for t in model.T))

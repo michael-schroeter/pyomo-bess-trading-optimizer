@@ -35,7 +35,7 @@ def add_model_timeseries_results_to_df(template_df, models_by_year):
         'Cycles_EQ_CumSum': lambda m, t: m.v_CYCLES_EQ_CUMSUM[t],
         'REST_CAPACITY_CYCLE':    lambda m, t: m.v_REST_CAPACITY_CYCLE[t],
         'BATTERY_CAPACITY': lambda m, t: m.v_BATTERY_CAPACITY[t],
-        'EFFICIENCY':       lambda m, t: m.v_EFFICIENCY[t],
+        'EFFICIENCY':       lambda m, t: m.v_EFFICIENCY_SYS[t],
     }
 
     model_results_timeseries = {}

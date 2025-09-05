@@ -1,7 +1,4 @@
-import pyomo.environ as pyo
-from params.scenario_config1 import (
-    EFFICIENCY_BAT,
-)
+import pyomo.environ as pyos
 from config import SPECIFIC_PRL_ENERGY_NEED_15MIN
 
 import pyomo.environ as pyo
@@ -9,14 +6,14 @@ import pyomo.environ as pyo
 def define_charge_discharge_expr(model):
 
     def market_charge(m, t):
-        return m.v_BUY_VOL[t] * EFFICIENCY_BAT
+        return m.v_BUY_VOL[t] * m.p_INITIAL_EFFICIENCY
     model.e_MARKET_CHARGE = pyo.Expression(model.T, rule=market_charge)
     model.e_MARKET_CHARGE_SUM = pyo.Expression(
         expr=sum(model.e_MARKET_CHARGE[t] for t in model.T)
     )
 
     def market_discharge(m, t):
-        return m.v_SELL_VOL[t] / EFFICIENCY_BAT
+        return m.v_SELL_VOL[t] / m.p_INITIAL_EFFICIENCY
     model.e_MARKET_DISCHARGE = pyo.Expression(model.T, rule=market_discharge)
     model.e_MARKET_DISCHARGE_SUM = pyo.Expression(
         expr=sum(model.e_MARKET_DISCHARGE[t] for t in model.T)
@@ -24,7 +21,7 @@ def define_charge_discharge_expr(model):
 
 
     def prl_charge(m, t):
-        return m.e_PRL_POWER[t] * SPECIFIC_PRL_ENERGY_NEED_15MIN / 2 * EFFICIENCY_BAT
+        return m.e_PRL_POWER[t] * SPECIFIC_PRL_ENERGY_NEED_15MIN / 2 * m.p_INITIAL_EFFICIENCY
     model.e_PRL_CHARGE = pyo.Expression(model.T, rule=prl_charge)
     model.e_PRL_CHARGE_SUM = pyo.Expression(
         expr=sum(model.e_PRL_CHARGE[t] for t in model.T)
@@ -32,7 +29,7 @@ def define_charge_discharge_expr(model):
 
 
     def prl_discharge(m, t):
-        return m.e_PRL_POWER[t] * SPECIFIC_PRL_ENERGY_NEED_15MIN / 2 / EFFICIENCY_BAT
+        return m.e_PRL_POWER[t] * SPECIFIC_PRL_ENERGY_NEED_15MIN / 2 / m.p_INITIAL_EFFICIENCY
     model.e_PRL_DISCHARGE = pyo.Expression(model.T, rule=prl_discharge)
     model.e_PRL_DISCHARGE_SUM = pyo.Expression(
         expr=sum(model.e_PRL_DISCHARGE[t] for t in model.T)
@@ -41,7 +38,7 @@ def define_charge_discharge_expr(model):
 
     def srl_neg_charge(m, t):
         if m.p_SRL_WORK_PRICE_NEG[t] != 0:
-            return m.e_SRL_POWER_NEG[t] * 15/60 * EFFICIENCY_BAT # MW * 15 minutes/60 minutes
+            return m.e_SRL_POWER_NEG[t] * 15/60 * m.p_INITIAL_EFFICIENCY # MW * 15 minutes/60 minutes
         else:
             return 0
     model.e_SRL_NEG_CHARGE = pyo.Expression(model.T, rule=srl_neg_charge)
@@ -52,7 +49,7 @@ def define_charge_discharge_expr(model):
 
     def srl_pos_discharge(m, t):
         if m.p_SRL_WORK_PRICE_POS[t] != 0:
-            return m.e_SRL_POWER_POS[t] * 15/60  / EFFICIENCY_BAT # MW * 15 minutes/60 minutes
+            return m.e_SRL_POWER_POS[t] * 15/60  / m.p_INITIAL_EFFICIENCY # MW * 15 minutes/60 minutes
         else:
             return 0
     model.e_SRL_POS_DISCHARGE = pyo.Expression(model.T, rule=srl_pos_discharge)

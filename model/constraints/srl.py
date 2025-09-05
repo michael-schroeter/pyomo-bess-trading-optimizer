@@ -1,5 +1,5 @@
 import pyomo.environ as pyo
-from params.scenario_config1 import SYSTEM_POWER, EFFICIENCY_BAT
+from params.scenario_config1 import SYSTEM_POWER
 
 
 def add_srl_mode_constraints(model):
@@ -68,7 +68,7 @@ def add_srl_energy_constraints(model):
         iv = (d, q)
         start_t = m.interval_to_start_time[iv]
         relevant_t = start_t if start_t == m.T.first() else m.T.prev(start_t)
-        required_energy = m.v_SRL_POWER_POS[iv] / EFFICIENCY_BAT
+        required_energy = m.v_SRL_POWER_POS[iv] / m.p_INITIAL_EFFICIENCY
         return m.v_STORED_ENERGY[relevant_t] >= required_energy
     model.c_SRL_energy_pos = pyo.Constraint(model.D4, rule=energy_srl_pos_rule)
 
@@ -76,7 +76,7 @@ def add_srl_energy_constraints(model):
         iv = (d, q)
         start_t = m.interval_to_start_time[iv]
         relevant_t = start_t if start_t == m.T.first() else m.T.prev(start_t) 
-        required_headroom = m.v_SRL_POWER_NEG[iv] * EFFICIENCY_BAT 
+        required_headroom = m.v_SRL_POWER_NEG[iv] * m.p_INITIAL_EFFICIENCY 
         return m.v_STORED_ENERGY[relevant_t] <= m.v_BATTERY_CAPACITY[relevant_t] - required_headroom
        
     model.c_SRL_energy_neg = pyo.Constraint(model.D4, rule=energy_srl_neg_rule)
