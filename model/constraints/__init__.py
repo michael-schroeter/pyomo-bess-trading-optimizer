@@ -7,6 +7,7 @@ from .battery_degradation import add_battery_degradation_constraints
 from .cycles import add_cycles_real_constraints
 from .cycles_eq import add_cycles_eq_constraints
 from .efficiency_degradation import add_efficiency_degradation_constraints
+from .cycle_limits import add_cycle_limit_constraints
 
 
 def add_all_constraints(model, time_points):
@@ -19,6 +20,7 @@ def add_all_constraints(model, time_points):
     add_cycles_eq_constraints(model)
     add_battery_degradation_constraints(model)
     add_efficiency_degradation_constraints(model)
+    add_cycle_limit_constraints(model)
     return model
 
 

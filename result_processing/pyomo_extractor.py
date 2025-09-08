@@ -10,12 +10,17 @@ import pyomo.environ as pyo
 
 def add_model_timeseries_results_to_df(template_df, models_by_year):
     column_extractor_map = {
+        #teilnahme
         CC.BUY_VOL:  lambda m, t: m.v_BUY_VOL[t],
         CC.SELL_VOL: lambda m, t: m.v_SELL_VOL[t],
         CC.PRL_POWER:       lambda m, t: m.e_PRL_POWER[t],
         CC.SRL_POWER_NEG:   lambda m, t: m.e_SRL_POWER_NEG[t],
         CC.SRL_POWER_POS:   lambda m, t: m.e_SRL_POWER_POS[t],
+
+        #Battery
         CC.BAT_SOC:         lambda m, t: m.e_APPROX_SOC[t],
+        CC.STORED_ENERGY:   lambda m, t: m.v_STORED_ENERGY[t],
+
         CC.MARKET_CHARGE:    lambda m, t: m.e_MARKET_CHARGE[t],
         CC.MARKET_DISCHARGE: lambda m, t: m.e_MARKET_DISCHARGE[t],
         CC.PRL_CHARGE:     lambda m, t: m.e_PRL_CHARGE[t],
@@ -24,18 +29,31 @@ def add_model_timeseries_results_to_df(template_df, models_by_year):
         CC.SRL_POS_DISCHARGE: lambda m, t: m.e_SRL_POS_DISCHARGE[t],
         CC.TOTAL_CHARGE:           lambda m, t: m.e_TOTAL_CHARGE[t],
         CC.TOTAL_DISCHARGE:        lambda m, t: m.e_TOTAL_DISCHARGE[t],
+
+        CC.CYCLES_ID:     lambda m, t: m.e_CYCLES_REAL_INTRADAY[t],
+        CC.CYCLES_DA:    lambda m, t: m.e_CYCLES_REAL_DA[t],
+        CC.CYCLES_SPOT:         lambda m, t: m.e_CYCLES_REAL_MARKET[t], 
+        CC.CYCLES_PRL:          lambda m, t: m.e_CYCLES_REAL_PRL[t],
+        CC.CYCLES_SRL_POS:      lambda m, t: m.e_CYCLES_REAL_SRL_POS[t],
+        CC.CYCLES_SRL_NEG:      lambda m, t: m.e_CYCLES_REAL_SRL_NEG[t],
+        CC.CYCLES_SRL:          lambda m, t: m.e_CYCLES_REAL_SRL[t],
+        CC.CYCLES:           lambda m, t: m.v_CYCLES[t],
+        CC.CYCLES_EQ:        lambda m, t: m.v_CYCLES_EQ[t],
+        CC.CYCLES_CUMSUM:    lambda m, t: m.v_CYCLES_CUMSUM[t],
+        CC.CYCLES_EQ_CUMSUM: lambda m, t: m.v_CYCLES_EQ_CUMSUM[t],
+        CC.REST_CAPACITY_CYCLE:    lambda m, t: m.v_REST_CAPACITY_CYCLE[t],
+        CC.BATTERY_CAPACITY: lambda m, t: m.v_BATTERY_CAPACITY[t],
+        CC.EFFICIENCY:       lambda m, t: m.v_EFFICIENCY_SYS[t],
+        
+
+        #Money
         CC.REVENUE_MARKET:  lambda m, t: m.e_REVENUE_MARKET[t],
         CC.REVENUE_PRL:     lambda m, t: m.e_REVENUE_PRL[t],
         CC.REVENUE_SRL:     lambda m, t: m.e_REVENUE_SRL[t],
         CC.REVENUE_TOTAL:   lambda m, t: m.e_TOTAL_REVENUE[t],
         CC.AGING_COST:      lambda m, t: m.e_AGING_COST[t],
-        'Cycles':           lambda m, t: m.v_CYCLES[t],
-        'Cycles_EQ':        lambda m, t: m.v_CYCLES_EQ[t],
-        'Cycles_CumSum':    lambda m, t: m.v_CYCLES_CUMSUM[t],
-        'Cycles_EQ_CumSum': lambda m, t: m.v_CYCLES_EQ_CUMSUM[t],
-        'REST_CAPACITY_CYCLE':    lambda m, t: m.v_REST_CAPACITY_CYCLE[t],
-        'BATTERY_CAPACITY': lambda m, t: m.v_BATTERY_CAPACITY[t],
-        'EFFICIENCY':       lambda m, t: m.v_EFFICIENCY_SYS[t],
+
+
     }
 
     model_results_timeseries = {}
@@ -50,7 +68,7 @@ def add_model_timeseries_results_to_df(template_df, models_by_year):
 
 def add_model_atrs_results_to_df(models):
     attrs = {
-        #market/regelleistung
+        #teilnahme
         CC.BUY_VOL_SUM: lambda m: pyo.value(sum(m.v_BUY_VOL[t] for t in m.T)),
         CC.SELL_VOL_SUM: lambda m: pyo.value(sum(m.v_SELL_VOL[t] for t in m.T)),
         CC.PRL_POWER_SUM: lambda m: pyo.value(sum(m.e_PRL_POWER[t] for t in m.T)),
@@ -65,8 +83,9 @@ def add_model_atrs_results_to_df(models):
         CC.REVENUE_TOTAL_SUM: lambda m: pyo.value(m.e_TOTAL_REVENUE_SUM),
         CC.TAXES_SUM: lambda m: pyo.value(m.e_TAX),
         CC.OBJ: lambda m: pyo.value(m.OBJ),
-        'NET_CASHFLOW': lambda m: pyo.value(m.e_NET_CASHFLOW),
+        CC.NET_CASHFLOW: lambda m: pyo.value(m.e_NET_CASHFLOW),
 
+        ##Battery
         #charge/discharge
         CC.MARKET_CHARGE_SUM: lambda m: pyo.value(m.e_MARKET_CHARGE_SUM),
         CC.MARKET_DISCHARGE_SUM: lambda m: pyo.value(m.e_MARKET_DISCHARGE_SUM),
@@ -77,11 +96,15 @@ def add_model_atrs_results_to_df(models):
         CC.TOTAL_CHARGE_SUM: lambda m: pyo.value(m.e_TOTAL_CHARGE_SUM),
         CC.TOTAL_DISCHARGE_SUM: lambda m: pyo.value(m.e_TOTAL_DISCHARGE_SUM),
         # Cycles
+        CC.CYCLES_ID_SUM: lambda m: pyo.value(sum(m.e_CYCLES_REAL_INTRADAY[t] for t in m.T)),
+        CC.CYCLES_DA_SUM: lambda m: pyo.value(sum(m.e_CYCLES_REAL_DA[t] for t in m.T)),
+        CC.CYCLES_SPOT_SUM: lambda m: pyo.value(sum(m.e_CYCLES_REAL_MARKET[t] for t in m.T)),
+        CC.CYCLES_PRL_SUM: lambda m: pyo.value(sum(m.e_CYCLES_REAL_PRL[t] for t in m.T)),
+        CC.CYCLES_SRL_POS_SUM: lambda m: pyo.value(sum(m.e_CYCLES_REAL_SRL_POS[t] for t in m.T)),
+        CC.CYCLES_SRL_NEG_SUM: lambda m: pyo.value(sum(m.e_CYCLES_REAL_SRL_NEG[t] for t in m.T)),
+        CC.CYCLES_SRL_SUM: lambda m: pyo.value(sum(m.e_CYCLES_REAL_SRL[t] for t in m.T)),
         CC.BATTERY_CYCLES: lambda m: pyo.value(sum(m.v_CYCLES[t] for t in m.T)),
-        'Cycles_eq': lambda m: pyo.value(sum(m.v_CYCLES_EQ[t] for t in m.T)),
-        
-
-        
+        CC.BATTERY_CYCLES_EQ: lambda m: pyo.value(sum(m.v_CYCLES_EQ[t] for t in m.T)),
 
     }
 

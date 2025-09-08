@@ -1,9 +1,10 @@
 import time
 import pandas as pd
 from utils import convert_datetime_to_string
-from params.scenario_config1 import (
+from params.scenario_config import (
     START_DATE,
     END_DATE,
+    PSEUDO_END_DATE,
 )
 from config_column_names import ColumnNamesRaw as CR,  ColumnNamesClean as CC
 from dataloader import (
@@ -45,6 +46,9 @@ def create_dataframe(start_date, end_date, specific_aging_cost, debug=False):
     df_master.index.name = CC.DATE
     if debug:
         logging.info("Finaler Master-DataFrame: Shape=%s", df_master.shape)
+
+    if PSEUDO_END_DATE:
+     df_master = repeat_timeseries_until(df_master, PSEUDO_END_DATE)
     return df_master
 
 
@@ -53,6 +57,23 @@ def create_master_df(start_date, end_date):
     master_index = pd.date_range(start=start_date, end=end_date, freq='15min', tz='Europe/Berlin', inclusive='left')
     df = pd.DataFrame(index=master_index)
     return df
+
+
+def repeat_timeseries_until(df, end_date) -> pd.DataFrame:
+    start = df.index.min()
+    end = df.index.max()
+    target_end = pd.Timestamp(end_date)
+    repetitions = int((target_end - start) / (end - start + pd.Timedelta(minutes=15))) + 1
+
+    parts = []
+    for i in range(repetitions):
+        shift = (end - start + pd.Timedelta(minutes=15)) * i
+        df_shifted = df.copy()
+        df_shifted.index = df_shifted.index + shift
+        parts.append(df_shifted)
+
+    result = pd.concat(parts)
+    return result.loc[:target_end]
 
 
 if __name__ == "__main__":

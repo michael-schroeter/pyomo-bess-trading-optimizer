@@ -1,6 +1,6 @@
 import pyomo.environ as pyo
 
-from cost_calculator import calculate_capex, calculate_opex, calculate_depreciation_amount
+from cost_calculator import calculate_opex_per_month
 
 def define_additional_sums_expr(model):
     def net_cashflow(m):        
@@ -10,11 +10,3 @@ def define_additional_sums_expr(model):
         return (revenue - taxes - opex)
     model.e_NET_CASHFLOW = pyo.Expression(rule=net_cashflow)
 
-
-
-def define_additional_timeseries_expr(model):
-    # calculate battery cycles
-    def net_cashflow(m, t):
-        opex = calculate_opex()
-        
-        pass

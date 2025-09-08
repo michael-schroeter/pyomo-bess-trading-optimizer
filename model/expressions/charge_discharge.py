@@ -1,4 +1,3 @@
-import pyomo.environ as pyos
 from config import SPECIFIC_PRL_ENERGY_NEED_15MIN
 
 import pyomo.environ as pyo
@@ -21,7 +20,7 @@ def define_charge_discharge_expr(model):
 
 
     def prl_charge(m, t):
-        return m.e_PRL_POWER[t] * SPECIFIC_PRL_ENERGY_NEED_15MIN / 2 * m.p_INITIAL_EFFICIENCY
+        return m.e_PRL_POWER[t] * SPECIFIC_PRL_ENERGY_NEED_15MIN * m.p_INITIAL_EFFICIENCY / 2  
     model.e_PRL_CHARGE = pyo.Expression(model.T, rule=prl_charge)
     model.e_PRL_CHARGE_SUM = pyo.Expression(
         expr=sum(model.e_PRL_CHARGE[t] for t in model.T)
@@ -29,7 +28,7 @@ def define_charge_discharge_expr(model):
 
 
     def prl_discharge(m, t):
-        return m.e_PRL_POWER[t] * SPECIFIC_PRL_ENERGY_NEED_15MIN / 2 / m.p_INITIAL_EFFICIENCY
+        return m.e_PRL_POWER[t] * SPECIFIC_PRL_ENERGY_NEED_15MIN / (2 * m.p_INITIAL_EFFICIENCY)
     model.e_PRL_DISCHARGE = pyo.Expression(model.T, rule=prl_discharge)
     model.e_PRL_DISCHARGE_SUM = pyo.Expression(
         expr=sum(model.e_PRL_DISCHARGE[t] for t in model.T)

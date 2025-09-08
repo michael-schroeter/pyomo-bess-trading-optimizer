@@ -18,9 +18,9 @@ def compare_da_id_prices(da_df: pd.DataFrame, id_df: pd.DataFrame) -> pd.DataFra
 
     result = pd.DataFrame({
         CC.HiGHER_MARKET_PRICE: higher,
-        CC.MARKET_HI: higher_market,
+        CC.HiGHER_MARKET_PRICE_LABEL: higher_market,
         CC.LOWER_MARKET_PRICE: lower,
-        CC.MARKET_LO: lower_market
+        CC.LOWER_MARKET_PRICE_LABEL: lower_market
     }, index=df.index)
 
     return result

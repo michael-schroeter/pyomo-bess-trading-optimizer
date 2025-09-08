@@ -3,8 +3,8 @@ import re
 from pathlib import Path
 from datetime import datetime
 import pandas as pd
-from params.scenario_config1 import SYSTEM_POWER
-import params.scenario_config1 as scenario_config1
+from params.scenario_config import SYSTEM_POWER
+import params.scenario_config as scenario_config
 import inspect
 
 
@@ -45,9 +45,9 @@ def get_pickle_path(source_path: str) -> str:
 def get_params_as_dict_old() -> dict:
 
     config_data = {}
-    for name, value in scenario_config1.__dict__.items():
+    for name, value in scenario_config.__dict__.items():
         if name.isupper():
-            if isinstance(value, scenario_config1.Path):
+            if isinstance(value, scenario_config.Path):
                 config_data[name] = str(value)
             else:
                 config_data[name] = value

@@ -19,8 +19,8 @@ class ColumnNamesClean:
     ID_AUC_PRICE             = 'ID'
     HiGHER_MARKET_PRICE = 'Higher Market Price'
     LOWER_MARKET_PRICE  = 'Lower Market Price'
-    MARKET_HI            = 'Market Higher'
-    MARKET_LO            = 'Market Lower'
+    HiGHER_MARKET_PRICE_LABEL            = 'Market Higher'
+    LOWER_MARKET_PRICE_LABEL            = 'Market Lower'
 
     PRL_PRICE            = 'PRL Price'
     SRL_POWER_PRICE_POS  = 'SRL Power Price Pos'
@@ -37,6 +37,8 @@ class ColumnNamesClean:
 
     #charge/discharge
     BAT_SOC              = 'Battery SOC'
+    STORED_ENERGY       = 'Stored Energy'
+
     MARKET_CHARGE       = 'Market Charge'
     MARKET_DISCHARGE    = 'Market Discharge'
     PRL_CHARGE          = 'PRL Charge'
@@ -45,6 +47,25 @@ class ColumnNamesClean:
     SRL_POS_DISCHARGE   = 'SRL Pos Discharge'
     TOTAL_CHARGE        = 'Total Charge'
     TOTAL_DISCHARGE     = 'Total Discharge'
+
+    CYCLES_ID        = 'Cycles Intraday'
+    CYCLES_DA        = 'Cycles Days Ahead'
+    CYCLES_SPOT      = 'Cycles Spot'
+    CYCLES_PRL       = 'Cycles PRL'
+    CYCLES_SRL_POS   = 'Cycles SRL Pos'
+    CYCLES_SRL_NEG   = 'Cycles SRL Neg'
+    CYCLES_SRL       = 'Cycles SRL'
+    CYCLES          = 'Cycles'
+    CYCLES_EQ       = 'Cycles EQ'
+    CYCLES_CUMSUM   = 'Cycles CumSum'
+    CYCLES_EQ_CUMSUM = 'Cycles EQ CumSum'
+
+    REST_CAPACITY_CYCLE = 'Rest Capacity Cycle'
+    BATTERY_CAPACITY   = 'Battery Capacity'
+    EFFICIENCY         = 'Efficiency'
+
+
+
     
     #money
     REVENUE_MARKET       = 'Revenue Market'
@@ -52,6 +73,7 @@ class ColumnNamesClean:
     REVENUE_SRL          = 'Revenue SRL'
     REVENUE_TOTAL        = 'Total Revenue'
     AGING_COST           = 'Aging Cost'
+    NET_CASHFLOW        = 'Net Cashflow'
 
 
 ## attrs
@@ -71,7 +93,16 @@ class ColumnNamesClean:
     SRL_POS_DISCHARGE_SUM = 'SRL Pos Discharge Sum'
     TOTAL_CHARGE_SUM    = 'Total Charge Sum'
     TOTAL_DISCHARGE_SUM = 'Total Discharge Sum'
+
+    CYCLES_ID_SUM        = 'Battery Cycles Intraday Sum'
+    CYCLES_DA_SUM        = 'Battery Cycles Days Ahead Sum'
+    CYCLES_SPOT_SUM       = 'Battery Cycles Spot Sum'
+    CYCLES_PRL_SUM       = 'Battery Cycles PRL Sum'
+    CYCLES_SRL_POS_SUM   = 'Battery Cycles SRL Pos Sum'
+    CYCLES_SRL_NEG_SUM   = 'Battery Cycles SRL Neg Sum'
+    CYCLES_SRL_SUM       = 'Battery Cycles SRL Sum'
     BATTERY_CYCLES      = 'Battery Cycles'
+    BATTERY_CYCLES_EQ   = 'Battery Cycles EQ'
 
     #money
     REVENUE_MARKET_SUM  = 'Revenue Market Sum'

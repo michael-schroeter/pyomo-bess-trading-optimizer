@@ -14,7 +14,7 @@ def add_cycles_real_constraints(model):
             return m.v_CYCLES_CUMSUM[t] == m.v_CYCLES_CUMSUM[m.T.prev(t)] + m.v_CYCLES[t]
     model.c_CYCLES_CUMSUM = pyo.Constraint(model.T, rule=cumulative_cycles_rule)
 
-    return model
+
 
 
 

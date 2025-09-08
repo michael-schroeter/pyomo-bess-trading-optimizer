@@ -1,5 +1,5 @@
 import pyomo.environ as pyo
-from params.scenario_config1 import (
+from params.scenario_config import (
     TAX_RATE,
 )
 

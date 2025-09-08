@@ -1,6 +1,6 @@
 import pyomo.environ as pyo
 from pyomo.core import SOSConstraint
-from params.scenario_config1 import INITIAL_BATTERY_CAPACITY, MAX_CHARGE_RATE, MAX_CYCLE_RATE
+from params.scenario_config import MAX_CYCLE_RATE
 
 import pyomo.environ as pyo
 
