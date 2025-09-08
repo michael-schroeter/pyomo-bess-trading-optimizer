@@ -21,14 +21,15 @@ SOC_FACTORS = {0: 1.18991, 1: 1.03264, 2: 1.0, 3: 1.56676}
 BATTERY_DEGRADATION_CAL_VALUE = INITIAL_BATTERY_CAPACITY * 0.0033041117323577 / 100 / 96 # abhängig von zyklen/pro tag bzw märkte
 
 # cycle
-def c_rest(cycles_eq_cumsum):
+def calculate_rest_capacity(cycles_eq_cumsum: float) -> float:
     return (
         (
             4.26384996637378232975 * math.exp(-0.00235433534616526522 * cycles_eq_cumsum)
             + 251.46065636316288305352 * math.exp(-0.00000531056139597996 * cycles_eq_cumsum)
             - 155.72450632953666627145
-        ) / 100
-    )
+        ) / 100.0
+    ) * INITIAL_BATTERY_CAPACITY
+
 
 cap_deg_c_rate_factors = {
     1.0: 0.0, 
@@ -45,7 +46,7 @@ cycle_breakpoints = np.linspace(0, LIFETIME_CYCLES*2, 11).tolist()
 EFFICIENCY_DEGRADATION_CAL_VALUE = (2.714 * 10**(-6) / 100) * EFFICIENCY_BAT # pro 15min
 
 # cycle
-def calculate_efficiency_bat_rest(cycles_cumsum, factor_crate):
+def calculate_rest_efficiency_bat(cycles_cumsum, factor_crate):
         factor = (1.97192 * 10**(-6))  / 100 * factor_crate # pro Cycle
         n = EFFICIENCY_BAT
         v = -factor*EFFICIENCY_BAT

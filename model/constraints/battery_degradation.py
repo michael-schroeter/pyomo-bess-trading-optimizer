@@ -3,7 +3,7 @@ import math
 import pyomo.environ as pyo
 from params.scenario_config import INITIAL_BATTERY_CAPACITY, LIFETIME_CYCLES
 from model.utils import get_bat_deg_factor
-from config_degradation import cap_deg_c_rate_factors, cycle_breakpoints
+from config_degradation import cap_deg_c_rate_factors, cycle_breakpoints, calculate_rest_capacity
 
 
 
@@ -20,17 +20,10 @@ def add_battery_degradation_constraints(model):
     model.c_battery_capacity = pyo.Constraint(model.T, rule=battery_capacity_rule)
         
 
-    def degradation_function_rule(model, t, cycles):
-        return INITIAL_BATTERY_CAPACITY * (
-    (
-        4.26384996637378232975 * math.exp(-0.00235433534616526522 * cycles)
-        + 251.46065636316288305352 * math.exp(-0.00000531056139597996 * cycles)
-        - 155.72450632953666627145
-    ) / 100
-)
+    def degradation_function_rule(m, t, cycles):
+        return calculate_rest_capacity(cycles)
     
     
-    cycle_breakpoints = np.linspace(0, LIFETIME_CYCLES*2, 11).tolist()
     model.c_define_capacity = pyo.Piecewise(
         model.T, 
         model.v_REST_CAPACITY_CYCLE,            # y
