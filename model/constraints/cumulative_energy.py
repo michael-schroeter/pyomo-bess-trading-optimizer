@@ -4,8 +4,8 @@ import pyomo.environ as pyo
 
 def add_cumulative_stored_energy_constraints(model):
     def cumulative_stored_energy_rule(model, t):
-        if t == min(model.T):
-            return model.v_STORED_ENERGY[t] == (model.e_TOTAL_CHARGE[t] - model.e_TOTAL_DISCHARGE[t])
+        if t == model.T.first():
+            return model.v_STORED_ENERGY[t] == (model.e_TOTAL_CHARGE[t] - model.e_TOTAL_DISCHARGE[t]) + model.p_INITIAL_STORED_ENERGY
         else:
             prev_t = model.T.prev(t)  
             return model.v_STORED_ENERGY[t] == model.v_STORED_ENERGY[prev_t] + (model.e_TOTAL_CHARGE[t] - model.e_TOTAL_DISCHARGE[t])

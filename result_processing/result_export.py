@@ -10,11 +10,12 @@ from .filename_creator import create_random_filename
 def export_results(df_timeseries: pd.DataFrame,
                    df_attrs: pd.DataFrame,
                    df_params: pd.DataFrame,  # <-- Akzeptiert jetzt einen DataFrame
+                   c_rate: float,
                    results_dir: Path = RESULTS_DIR,
                    ):
-    filename = create_random_filename()
-    excel_path = results_dir / (f"{filename}.xlsx")
-    pickle_path = results_dir / (f"{filename}.pkl")
+    filename_id = create_random_filename()
+    excel_path = results_dir / (f"CRate_{c_rate}_{filename_id}.xlsx")
+    pickle_path = results_dir / (f"CRate_{c_rate}_{filename_id}.pkl")
     params_dict_for_pickle = df_params.set_index('Parameter')['Value'].to_dict()
 
     export_to_pickle(df_timeseries, df_attrs, params_dict_for_pickle, pickle_path)

@@ -2,17 +2,10 @@ import pyomo.environ as pyo
 from pyomo.core import SOSConstraint
 from params.scenario_config import MAX_CYCLE_RATE
 
-import pyomo.environ as pyo
-
+from config_degradation import soc_bin_bounds
 def add_cycles_eq_constraints(model):
     
-    eps = 1e-6
-    soc_bin_bounds = {
-        0: (0.00, 0.25 - eps),
-        1: (0.25, 0.50 - eps),
-        2: (0.50, 0.75 - eps),
-        3: (0.75, 1.00 + eps),
-    }
+
     
 
     

@@ -22,7 +22,7 @@ def solve_model(model):
 
 
 
-def setup_model(df_data_period, initial_battery_capacity_for_year, initial_cycles, initial_cycles_eq, initial_efficiency):
+def setup_model(df_data_period, initial_battery_capacity_for_year, initial_cycles, initial_cycles_eq, initial_efficiency, initial_stored_energy):
     time_points = df_data_period.index.tolist()	
     model = pyo.ConcreteModel()
     
@@ -38,7 +38,7 @@ def setup_model(df_data_period, initial_battery_capacity_for_year, initial_cycle
     model.interval_to_start_time = { iv: min(t for t, interval in model.time_to_interval.items() if interval == iv)for iv in model.D4} # speichert für jedes 4-Stunden-Intervall den ersten 15-Minuten-Zeitschritt
     model.K = pyo.Set(initialize=range(4), ordered=True)
     
-    define_params(model, df_data_period, initial_battery_capacity_for_year, initial_cycles, initial_cycles_eq, initial_efficiency)
+    define_params(model, df_data_period, initial_battery_capacity_for_year, initial_cycles, initial_cycles_eq, initial_efficiency, initial_stored_energy)
     define_variables(model)
     define_all_expressions(model)
     add_all_constraints(model, time_points)

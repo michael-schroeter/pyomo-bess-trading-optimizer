@@ -15,13 +15,14 @@ from params.scenario_config import (
     END_DATE,
     INITIAL_BATTERY_CAPACITY,
     EFFICIENCY_SYS,
+    SYSTEM_POWER
 )
 from utils import get_params_as_dataframe
 from cost_calculator import calculate_specific_aging_cost
 
 
-def main_optimisation(df_data_period, initial_battery_capacity_for_year, initial_cycles, initial_cycles_eq, initial_efficiency):
-    model = setup_model(df_data_period, initial_battery_capacity_for_year, initial_cycles, initial_cycles_eq, initial_efficiency)
+def main_optimisation(df_data_period, initial_battery_capacity_for_year, initial_cycles, initial_cycles_eq, initial_efficiency, initial_stored_energy):
+    model = setup_model(df_data_period, initial_battery_capacity_for_year, initial_cycles, initial_cycles_eq, initial_efficiency, initial_stored_energy)
     solve_model(model)
     print(f" profit: {pyo.value(model.OBJ)}")
     return model
@@ -34,6 +35,7 @@ def build_models_by_period(df_data: pd.DataFrame) -> Dict[int, object]:
     current_start_efficiency = EFFICIENCY_SYS
     current_start_cycles = 0
     current_start_cycles_eq = 0
+    current_start_stored_energy = 0
     models_by_year = {}
     for year_timestamp, df_data_year in df_data.groupby(pd.Grouper(freq='ME')):
         if df_data_year.empty:
@@ -43,7 +45,7 @@ def build_models_by_period(df_data: pd.DataFrame) -> Dict[int, object]:
         print(f"Baue Modell für Jahr {key} ({df_data_year.index[0].date()} bis {df_data_year.index[-1].date()})")
         #measure
         start_time = time.time()
-        model_year = main_optimisation(df_data_year, current_start_battery_capacity, current_start_cycles, current_start_cycles_eq, current_start_efficiency)
+        model_year = main_optimisation(df_data_year, current_start_battery_capacity, current_start_cycles, current_start_cycles_eq, current_start_efficiency, current_start_stored_energy)
         print(f"{key}:  {time.time() - start_time:.2f} Sekunden")
         models_by_year[key] = model_year
         
@@ -61,6 +63,9 @@ def build_models_by_period(df_data: pd.DataFrame) -> Dict[int, object]:
         
         final_cycles_eq_of_year = pyo.value(model_year.v_CYCLES_EQ_CUMSUM[model_year.T.last()])
         current_start_cycles_eq = final_cycles_eq_of_year
+
+        final_stored_energy_of_period = pyo.value(model_year.v_STORED_ENERGY[model_year.T.last()])
+        current_start_stored_energy = final_stored_energy_of_period
 
     return models_by_year
 
@@ -82,7 +87,8 @@ if __name__ == "__main__":
     params_data.loc[0, 'Berechnungszeit Minuten'] = time_delta/60
     params_data.loc[0, 'Berechnungszeit Stunden'] = time_delta/60/60
 
-    export_results(df_timeseries, df_attrs, params_data)
+    c_rate = round(SYSTEM_POWER / INITIAL_BATTERY_CAPACITY, 3)
+    export_results(df_timeseries, df_attrs, params_data, c_rate)
 
 
 
