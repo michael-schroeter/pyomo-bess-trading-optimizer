@@ -17,7 +17,7 @@ LOADERS_TO_RUN = {
 
 
 if __name__ == "__main__":
-    api_key = '382100ed-6229-44cd-87c1-3726801cc157'
+    api_key = os.environ["ENTSOE_API_KEY"]
 
 
     for loader_name, LoaderClass in LOADERS_TO_RUN.items():

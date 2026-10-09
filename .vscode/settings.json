@@ -1,6 +1,0 @@
-{
-    // ... andere Einstellungen, die du vielleicht schon hast ...
-    "terminal.integrated.env.windows": {
-        "PYTHONPATH": "${workspaceFolder}"
-    }
-}
