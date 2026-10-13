@@ -38,7 +38,6 @@ Ein Batteriespeicher kann seine Leistung in jedem Zeitpunkt nur einmal vermarkte
 ```
 ├── api/                 # Datenabruf über die ENTSO-E-Transparenzplattform
 ├── dataloader/          # Einlesen und Aufbereiten der Marktdaten
-├── ergebnisse/          # Grafiken für diese README
 ├── model/
 │   ├── constraints/     # Nebenbedingungen (Märkte, PRL, SRL, Zyklen, Degradation …)
 │   ├── expressions/     # Erlöse, Alterungskosten, Steuern …
@@ -46,6 +45,7 @@ Ein Batteriespeicher kann seine Leistung in jedem Zeitpunkt nur einmal vermarkte
 │   └── objective.py     # Zielfunktion
 ├── params/              # Szenario-Konfiguration (Batterie, Kosten, Märkte)
 ├── result_processing/   # Extraktion und Export der Ergebnisse
+├── results/             # Grafiken für diese README
 ├── scripts/             # Pipelines: Daten laden, optimieren, visualisieren
 ├── visualization/       # Auswertungsgrafiken
 ├── config_degradation.py
@@ -60,19 +60,19 @@ Untersucht wurde ein 3-MW-Speicher mit unterschiedlichen C-Raten (1, 0,5 und 1/3
 
 **Revenue Stacking lohnt sich:** Die kombinierte Vermarktung über alle Märkte erzielt über zwei Jahre rund 41 % mehr als die profitabelste Einzelvermarktung (SRL).
 
-![Kumulativer Zielfunktionswert in Mio. € je Markt und mit Revenue Stacking](ergebnisse/revenue_stacking.png)
+![Kumulativer Zielfunktionswert in Mio. € je Markt und mit Revenue Stacking](results/revenue_stacking.png)
 
 *Kumulativer Zielfunktionswert in Mio. € (C-Rate 0,5): Einzelmärkte im Vergleich zum Revenue Stacking*
 
 **Die C-Rate ist entscheidend:** Ein System mit C-Rate 0,5 bietet den besten Kompromiss aus Investitionskosten, Amortisationszeit und Gesamtprofit. Eine größere Kapazität (C-Rate 1/3) bringt nur noch wenig zusätzlichen Ertrag.
 
-![Kumulierter Netto-Cashflow über die Lebensdauer je C-Rate](ergebnisse/cashflow_c_rate.png)
+![Kumulierter Netto-Cashflow über die Lebensdauer je C-Rate](results/cashflow_c_rate.png)
 
 *Kumulierter Netto-Cashflow über die Lebensdauer: Der Nulldurchgang markiert die Amortisation, der Endwert den Gesamtprofit.*
 
 Mit sinkender C-Rate verschiebt sich der Umsatz vom PRL- zum SRL-Markt, der bei den größeren Speichern den Hauptanteil der Erlöse liefert.
 
-![Anteil der Märkte am Gesamtumsatz je C-Rate](ergebnisse/erloesanteile_c_rate.png)
+![Anteil der Märkte am Gesamtumsatz je C-Rate](results/erloesanteile_c_rate.png)
 
 Da das Modell mit Perfect Foresight arbeitet, zeigen die Ergebnisse das theoretische Erlöspotenzial. Sie eignen sich als Benchmark für Prognose- und Handelsmodelle im realen Betrieb.
 
