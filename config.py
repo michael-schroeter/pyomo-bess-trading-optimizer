@@ -10,6 +10,7 @@ PATH_SRL_POWER_DATA = 'data/Sekundär Leistung Ergebnisse 2021 bis 2024.xlsx'
 PATH_SRL_WORK_DATA = 'data/srl_work_cbmp_2022-07-01 - 2025-06-29.pkl'
 
 RESULTS_DIR = Path("results")
+RESULTS_FILE_NAME_PICKLE = "all.pkl"  # Standard-Ergebnisdatei für die Visualisierung
 
 
 SPECIFIC_PRL_ENERGY_NEED_15MIN = (1/3) / 16  # MWh/MW pro 15min

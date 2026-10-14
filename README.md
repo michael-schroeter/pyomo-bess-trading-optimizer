@@ -76,6 +76,20 @@ Mit sinkender C-Rate verschiebt sich der Umsatz vom PRL- zum SRL-Markt, der bei 
 
 Da das Modell mit Perfect Foresight arbeitet, zeigen die Ergebnisse das theoretische Erlöspotenzial. Sie eignen sich als Benchmark für Prognose- und Handelsmodelle im realen Betrieb.
 
+## Grenzen des Modells
+
+Das Modell ist bewusst vereinfacht, damit es als gemischt-ganzzahliges lineares Problem lösbar bleibt. Die wichtigsten Einschränkungen:
+
+- **Perfect Foresight:** Alle Preise sind im Voraus bekannt. Die Ergebnisse sind daher eine Obergrenze und keine Prognose für den realen Betrieb.
+- **Monatsweise Optimierung:** Jeder Monat wird einzeln gelöst und der Zustand übergeben. Am Monatsende gibt es keine Vorgabe für den Ladezustand.
+- **Konstante Parameter innerhalb eines Monats:** Wirkungsgrad und Kapazität gehen pro Monat als feste Werte in die Energiebilanz ein und werden erst im Folgemonat aktualisiert.
+- **Vereinfachte SRL-Aktivierung:** Die Batterie gilt als abgerufen, sobald der Arbeitspreis (CBMP) über einer Schwelle aus Alterungskosten und Gewinnfaktor liegt, und liefert dann für die ganze Viertelstunde die volle angebotene Leistung. Tatsächliche Abrufmengen werden nicht abgebildet.
+- **Alterung:** Die kalendarische Alterung wird in der aktuellen Umsetzung nicht über die Zeit aufsummiert, die Lebensdauer wird dadurch eher überschätzt. Der Einfluss der C-Rate auf die Kapazitätsdegradation wirkt nur je Zeitschritt und ist dadurch sehr gering.
+- **Solver-Toleranz:** Gurobi löst mit einer MIP-Lücke von 5 %. Unterschiede zwischen Szenarien in dieser Größenordnung sind nicht belastbar.
+- **Steuern:** Vereinfacht mit 20 %, monatlich berechnet und ohne Verlustvortrag.
+
+Mögliche Weiterentwicklungen sind eine kumulierte kalendarische Alterung, eine realistischere Abbildung der SRL-Abrufe und eine Optimierung mit Preisprognosen statt Perfect Foresight.
+
 ## Nutzung
 
 ```bash
@@ -93,6 +107,8 @@ Szenario in `params/scenario_config.py` anpassen, dann:
 python -m scripts.optimisation_backtest
 python -m scripts.visualisation_pipeline
 ```
+
+Die Optimierung speichert ihre Ergebnisse unter einem zufälligen Namen (z. B. `results/CRate_0.5_a1b2c3d4.pkl`). Für die Visualisierung müssen die Dateien vorher umbenannt werden: `all.pkl` für das Revenue Stacking sowie `market.pkl`, `prl.pkl` und `srl.pkl` für die Läufe mit jeweils nur einem Markt.
 
 ## Datenquellen
 

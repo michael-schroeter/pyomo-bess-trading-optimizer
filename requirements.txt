@@ -6,3 +6,4 @@ matplotlib
 seaborn
 entsoe-py
 openpyxl
+xlsxwriter
